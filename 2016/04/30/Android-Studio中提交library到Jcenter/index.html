@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Android Library," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言~现在使用 Android Studio 开发 Android 已经是大势所趋了，简单的一行代码就可以导入第三方库，极大方便了开发的流程，但仅仅知道如何导入是不行的，最近自己也尝试这开源了一个还不完善的裤子，其实主要是体验一下使用 Gradle 发布library 的过程，还是遇到了一些不大不小的问题的，所以说仅仅看是没有多大用的，很多事情还是要自己尝试才有很深的体会的。">
+<meta name="keywords" content="Android,Android Library">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Studio中提交library到Jcenter">
+<meta property="og:url" content="wavever.github.io/2016/04/30/Android-Studio中提交library到Jcenter/index.html">
+<meta property="og:site_name" content="wavever的博客">
+<meta property="og:description" content="前言~现在使用 Android Studio 开发 Android 已经是大势所趋了，简单的一行代码就可以导入第三方库，极大方便了开发的流程，但仅仅知道如何导入是不行的，最近自己也尝试这开源了一个还不完善的裤子，其实主要是体验一下使用 Gradle 发布library 的过程，还是遇到了一些不大不小的问题的，所以说仅仅看是没有多大用的，很多事情还是要自己尝试才有很深的体会的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-15T15:09:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Studio中提交library到Jcenter">
+<meta name="twitter:description" content="前言~现在使用 Android Studio 开发 Android 已经是大势所趋了，简单的一行代码就可以导入第三方库，极大方便了开发的流程，但仅仅知道如何导入是不行的，最近自己也尝试这开源了一个还不完善的裤子，其实主要是体验一下使用 Gradle 发布library 的过程，还是遇到了一些不大不小的问题的，所以说仅仅看是没有多大用的，很多事情还是要自己尝试才有很深的体会的。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="wavever.github.io/2016/04/30/Android-Studio中提交library到Jcenter/"/>
+
+
+
+
+
+  <title>Android Studio中提交library到Jcenter | wavever的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+
+  <div class="container  page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wavever的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">从容不迫，淡定始终。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="wavever.github.io/2016/04/30/Android-Studio中提交library到Jcenter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wavever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wavever的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android Studio中提交library到Jcenter</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-04-30T20:56:16+08:00">
+                2016-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言~"></a>前言~</h2><p>现在使用 Android Studio 开发 Android 已经是大势所趋了，简单的一行代码就可以导入第三方库，极大方便了开发的流程，但仅仅知道如何导入是不行的，最近自己也尝试这开源了一个还不完善的裤子，其实主要是体验一下使用 Gradle 发布library 的过程，还是遇到了一些不大不小的问题的，所以说仅仅看是没有多大用的，很多事情还是要自己尝试才有很深的体会的。<br><a id="more"></a></p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>因为我们要将裤子发布到Jcenter，而Jcenter是由JFrog公司提供的Bintray中的Java仓库，是目前最大的Java和Android开源软件构件仓库。所以我们需要先申请一个账号：Bintray官网，但尴尬的是，这个网站需要科学上网，所以非戦闘員の迅速な避難をしてください。。但不知道为什么，有时候翻了还是会上不去，类似下图:</p>
+<p>！<a href="http://ww1.sinaimg.cn/large/ace35ee1gw1f3w39cuo4sj20d007bq36.jpg" target="_blank" rel="noopener"></a></p>
+<h2 id="新建library"><a href="#新建library" class="headerlink" title="新建library"></a>新建library</h2><p>在 Studio 中新建一个 TagCornerImageView 的 Project，其中 app Module可以作为裤子的 demo，新建一个 Module，选择 Android library，然后在demo里面通过 <code>compile project(&#39;:yourlibraryname&#39;)</code> 引用自己的library。</p>
+<h2 id="修改gradle配置"><a href="#修改gradle配置" class="headerlink" title="修改gradle配置"></a>修改gradle配置</h2><p>打开根目录下的 <code>build.gradle</code> 文件，修改 dependencies，添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classpath &apos;com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0&apos;</span><br><span class="line">classpath &apos;com.github.dcendents:android-maven-gradle-plugin:1.3&apos;</span><br></pre></td></tr></table></figure>
+<p>更改后 <code>build.gradle</code> 文件为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath &apos;com.android.tools.build:gradle:1.5.0&apos;</span><br><span class="line">        classpath &apos;com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0&apos;</span><br><span class="line">        classpath &apos;com.github.dcendents:android-maven-gradle-plugin:1.3&apos;</span><br><span class="line">        // NOTE: Do not place your application dependencies here; they belong</span><br><span class="line">        // in the individual module build.gradle files</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task clean(type: Delete) &#123;</span><br><span class="line">    delete rootProject.buildDir</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：这里的 maven-gradle-plugin 版本为1.3，如果为1.2会出错。<br>打开 library 下的 build.gradle 文件，修改后为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;com.android.library&apos;</span><br><span class="line">apply plugin: &apos;com.github.dcendents.android-maven&apos;</span><br><span class="line">apply plugin: &apos;com.jfrog.bintray&apos;</span><br><span class="line">version = &quot;0.2.0&quot;	//版本号，以后每次更新library都得更改</span><br><span class="line">android &#123;</span><br><span class="line"></span><br><span class="line">    compileSdkVersion 23</span><br><span class="line">    buildToolsVersion &quot;23.0.3&quot;</span><br><span class="line">    resourcePrefix &quot;wavever_&quot;  //资源前缀</span><br><span class="line"></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        minSdkVersion 15</span><br><span class="line">        targetSdkVersion 23</span><br><span class="line">        versionCode 1</span><br><span class="line">        versionName version</span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled false</span><br><span class="line">            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    lintOptions &#123;</span><br><span class="line">        abortOnError false</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])</span><br><span class="line">    compile &apos;com.android.support:appcompat-v7:23.3.0&apos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">def siteUrl = &apos;https://github.com/wavever/TagCornerImageView&apos;	//Homepage URL of the library</span><br><span class="line">def gitUrl = &apos;https://github.com/wavever/TagCornerImageView.git&apos;	//Git repository url</span><br><span class="line">def issueUrl = &apos;https://github.com/wavever/TagCornerImageView/issues&apos;	//issue url of the library</span><br><span class="line">group = &quot;me.wavever.tagcornerimageview&quot;	//</span><br><span class="line">install &#123;</span><br><span class="line">    repositories.mavenInstaller &#123;</span><br><span class="line">        // This generates POM.xml with proper parameters</span><br><span class="line">        pom &#123;</span><br><span class="line">            project &#123;</span><br><span class="line">                packaging &apos;aar&apos;</span><br><span class="line">                // Add your description here</span><br><span class="line">                name &apos;A custom imageview that can add different style tag on corner&apos;</span><br><span class="line">                url siteUrl</span><br><span class="line">                // Set your license</span><br><span class="line">                licenses &#123;</span><br><span class="line">                    license &#123;</span><br><span class="line">                        name &apos;The Apache Software License, Version 2.0&apos;</span><br><span class="line">                        url &apos;http://www.apache.org/licenses/LICENSE-2.0.txt&apos;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                developers &#123;</span><br><span class="line">                    developer &#123;</span><br><span class="line">                        id &apos;wavever&apos; //your user ID</span><br><span class="line">                        name &apos;wavever&apos; //your name</span><br><span class="line">                        email &apos;wavever.ht@gmail.com&apos; //your email</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                scm &#123;</span><br><span class="line">                    connection gitUrl</span><br><span class="line">                    developerConnection gitUrl</span><br><span class="line">                    url siteUrl</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">task sourcesJar(type: Jar) &#123;</span><br><span class="line">    from android.sourceSets.main.java.srcDirs</span><br><span class="line">    classifier = &apos;sources&apos;</span><br><span class="line">&#125;</span><br><span class="line">task javadoc(type: Javadoc) &#123;</span><br><span class="line">    source = android.sourceSets.main.java.srcDirs</span><br><span class="line">    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))</span><br><span class="line">&#125;</span><br><span class="line">task javadocJar(type: Jar, dependsOn: javadoc) &#123;</span><br><span class="line">    classifier = &apos;javadoc&apos;</span><br><span class="line">    from javadoc.destinationDir</span><br><span class="line">&#125;</span><br><span class="line">artifacts &#123;</span><br><span class="line">    archives javadocJar</span><br><span class="line">    archives sourcesJar</span><br><span class="line">&#125;</span><br><span class="line">Properties properties = new Properties()</span><br><span class="line">properties.load(project.rootProject.file(&apos;local.properties&apos;).newDataInputStream())</span><br><span class="line">bintray &#123;</span><br><span class="line">    user = properties.getProperty(&quot;bintray.user&quot;)</span><br><span class="line">    key = properties.getProperty(&quot;bintray.apikey&quot;)</span><br><span class="line">    configurations = [&apos;archives&apos;]</span><br><span class="line">    pkg &#123;</span><br><span class="line">        repo = &quot;maven&quot;	//发布到Bintray的哪个仓库</span><br><span class="line">        name = &quot;TagCornerImageview&quot;	//发布到Bintray上的名字</span><br><span class="line">        desc = &quot;A library to add tag for ImageView.&quot;	//项目描述</span><br><span class="line">        websiteUrl = siteUrl</span><br><span class="line">        vcsUrl = gitUrl</span><br><span class="line">        issueTrackerUrl = issueUrl</span><br><span class="line">        licenses = [&quot;Apache-2.0&quot;]</span><br><span class="line">        labels = [&apos;android&apos;]	//标签</span><br><span class="line">        publish = true</span><br><span class="line">        publicDownloadNumbers = true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后要用到的就是前面提到的 username 和 apikey 了，在根目录下的local.properties 添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bintray.user=wavever</span><br><span class="line">bintary.apikey=your bintray apikey</span><br></pre></td></tr></table></figure>
+<h2 id="构建-amp-上传"><a href="#构建-amp-上传" class="headerlink" title="构建&amp;上传"></a>构建&amp;上传</h2><p>在 Studio 下的 Terminal 执行命令：gradlew build ，如果在 library\build\outputs\aar 生成：library-debug.aar 和 library-release.aar 两个aar文件，这就是我们要上传的文件，接着执行：<br>gradlew bintraryUpload。上传成功后，就可以在自己的maven仓库看到上传的library了，接着就可以点击右下角的 <code>Add to JCenter</code> ，添加成功后，基本隔天会受到许可邮件。</p>
+<p>然后就可以引用自己的library了，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile &apos;me.wavever.tagcornerimageview:library:0.2.0&apos;</span><br></pre></td></tr></table></figure>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>我们引用一个库时，依赖格式一般为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">  ...</span><br><span class="line">  compile &apos;org.greenrobot:eventbus:3.0.0&apos;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>即 <code>compile &#39;groupId:artifactId:version&#39;</code> ，其中 artifactId 为你的library的名字，就是生成的aar的名字。<br>Add to Jcente时，出现错误：</p>
+<blockquote>
+<p>Please fix the following before submitting a JCenter inclusion request:- Unable to find a valid POM file in the latest version of your package.</p>
+</blockquote>
+<p>看字义是没有有效的 POM 文件，从 maven 仓库删除后，从新发布了一遍就好了。<br>看到许多关于此类的博客，在 resourcePrefix 上都是说可以随便填，如果你没有自定义属性，随便填是可以的，但如果你需要在 xml 中引用自己自定义的属性，那么你会发现你的 library 中的 attrs.xml 会被红色的波浪下划线所标记，并且提示如下：</p>
+<blockquote>
+<p>Resource named ‘TagCornerImageView’ does not start with the project’s resource prefix ‘wavever_’; rename to ‘wavever_TagCornerImageView’ ? In Gradle projects you can specify a resource prefix that all resources in the project must conform to. This makes it easier to ensure that you don’t accidentally combine resources from different libraries, since they all end up in the same shared app namespace.</p>
+</blockquote>
+<p>当然你也可以忽略这个提示，但是我们还是要想一下为什么会有这个提示，从提示内容可以看出来，使用前缀名，目的是为了区分不同的 library，因为他们会共用一个命名空间，类似与，在一个 xml 文件中，使用<br><code>xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</code>，然后我们就可以通过app:来使用自定义的属性，但如果一个xml文件中有两个不同的自定义控件，并且都有个共同的自定义属性，那么就会出现歧义，这应该也是一种良好的规范吧。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://blog.saymagic.cn/2015/02/16/release-library-to-jcenter.html" target="_blank" rel="noopener">ndroid Studio发布项目到Jcenter</a><br></p>
+<p><a href="http://hujiaweibujidao.github.io/blog/2015/05/28/publish-gradle-android-library-to-jcenter-repository/" target="_blank" rel="noopener">Publish Gradle Android Library to jCenter Repository</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Android-Library/" rel="tag"># Android Library</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/12/Git中-gitignore的语法规范/" rel="next" title="Git中.gitignore的语法规范">
+                <i class="fa fa-chevron-left"></i> Git中.gitignore的语法规范
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/15/使用SystemBarTint搭配NavigationView在Android4-4以上实现透明状态栏/" rel="prev" title="使用SystemBarTint搭配NavigationView在Android4.4以上实现透明状态栏">
+                使用SystemBarTint搭配NavigationView在Android4.4以上实现透明状态栏 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wavever</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wavever" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wavever.ht@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/4736526/wavever" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言~</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建library"><span class="nav-number">3.</span> <span class="nav-text">新建library</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改gradle配置"><span class="nav-number">4.</span> <span class="nav-text">修改gradle配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建-amp-上传"><span class="nav-number">5.</span> <span class="nav-text">构建&amp;上传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遇到的问题"><span class="nav-number">6.</span> <span class="nav-text">遇到的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wavever</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

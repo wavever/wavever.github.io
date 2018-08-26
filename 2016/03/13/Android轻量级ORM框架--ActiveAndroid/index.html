@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,数据库,ORM," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近做的一个项目中，需要用到数据库，自己以前也用过 Android 自带的SQLite，但用起来很麻烦，所以 ORM 框架的出现简直就是福音啊，现在市面上主流的框架有 GreenDao、ActiveAndroid、ORMLite、Realm 等。">
+<meta name="keywords" content="Android,数据库,ORM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android轻量级ORM框架--ActiveAndroid">
+<meta property="og:url" content="wavever.github.io/2016/03/13/Android轻量级ORM框架--ActiveAndroid/index.html">
+<meta property="og:site_name" content="wavever的博客">
+<meta property="og:description" content="最近做的一个项目中，需要用到数据库，自己以前也用过 Android 自带的SQLite，但用起来很麻烦，所以 ORM 框架的出现简直就是福音啊，现在市面上主流的框架有 GreenDao、ActiveAndroid、ORMLite、Realm 等。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-15T14:41:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android轻量级ORM框架--ActiveAndroid">
+<meta name="twitter:description" content="最近做的一个项目中，需要用到数据库，自己以前也用过 Android 自带的SQLite，但用起来很麻烦，所以 ORM 框架的出现简直就是福音啊，现在市面上主流的框架有 GreenDao、ActiveAndroid、ORMLite、Realm 等。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="wavever.github.io/2016/03/13/Android轻量级ORM框架--ActiveAndroid/"/>
+
+
+
+
+
+  <title>Android轻量级ORM框架--ActiveAndroid | wavever的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+
+  <div class="container  page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wavever的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">从容不迫，淡定始终。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="wavever.github.io/2016/03/13/Android轻量级ORM框架--ActiveAndroid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wavever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wavever的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android轻量级ORM框架--ActiveAndroid</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-13T21:40:21+08:00">
+                2016-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近做的一个项目中，需要用到数据库，自己以前也用过 Android 自带的SQLite，但用起来很麻烦，所以 ORM 框架的出现简直就是福音啊，现在市面上主流的框架有 <code>GreenDao</code>、<code>ActiveAndroid</code>、<code>ORMLite</code>、<code>Realm</code> 等。<a id="more"></a></p>
+<p>先说一下什么是 <code>ORM</code>（来自维基百科）：</p>
+<blockquote>
+<p>对象关系映射（英语：Object Relational Mapping，简称ORM，或O/RM，或O/R mapping），是一种程序技术，用于实现面向对象编程语言里不同类型系统的数据之间的转换。从效果上说，它其实是创建了一个可在编程语言里使用的“虚拟对象数据库”。</p>
+</blockquote>
+<p>再说 ActiveAndroid:</p>
+<p>ActiveAndroid 可以只使用类似 save()，delete()的方法就完成数据的保存和删除，大大简化了 Android 中数据库的操作，而且配置也是炒鸡简单。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>先在 Gradle 中导入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">    maven &#123; url &quot;https://oss.sonatype.org/content/repositories/snapshots/&quot; &#125;</span><br><span class="line">&#125; </span><br><span class="line">compile &apos;com.michaelpardo:activeandroid:3.1.0-SNAPSHOT&apos;</span><br></pre></td></tr></table></figure>
+<p>导入好以后，通过以下两部配置，先是添加一些全局的设置，即数据库的名称和版本，ActiveAndroid 将从 AndroidManifest.xml 中查询他们：</p>
+<p>AA_DB_NAME (optional) 默认为”Application.db”<br>AA_DB_VERSION (optional – defaults to 1) 默认为1</p>
+<p><strong>注意</strong>：这两个 name 不能更改。</p>
+<p>具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;manifest ...&gt;</span><br><span class="line">    &lt;application android:name=&quot;com.activeandroid.app.Application&quot; ...&gt;</span><br><span class="line">        ...</span><br><span class="line">        &lt;meta-data android:name=&quot;AA_DB_NAME&quot; android:value=&quot;Pickrand.db&quot; /&gt;</span><br><span class="line">        &lt;meta-data android:name=&quot;AA_DB_VERSION&quot; android:value=&quot;5&quot; /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;/application&gt;</span><br><span class="line">&lt;/manifest&gt;</span><br></pre></td></tr></table></figure>
+<p>注意上面 application 的 name，必须指向 ActiveAndroid 下的 Application，这一步是必须的，如果是自定义的 Application，则：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">com</span>.<span class="title">activeandroid</span>.<span class="title">app</span>.<span class="title">Application</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<p>但是如果你的 Application 已经继承了其他库，而不能继承com.activeandroid.app.Application，那么你可以这样做：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">SomeLibraryApplication</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        ActiveAndroid.initialize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"> 	<span class="meta">@Override</span> </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onTerminate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onTerminate();</span><br><span class="line">        ActiveAndroid.dispose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你想建立一个动态数据库，可以使用 Configuration 类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">SomeLibraryApplication</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        Configuration dbConfiguration = <span class="keyword">new</span> Configuration.Builder(<span class="keyword">this</span>).setDatabaseName(<span class="string">"xxx.db"</span>).create();</span><br><span class="line">        ActiveAndroid.initialize(dbConfiguration);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="创建数据库模型"><a href="#创建数据库模型" class="headerlink" title="创建数据库模型"></a>创建数据库模型</h2><p>使用注解 @Table(name=”tablename”)来表示表，用注解 @Column(name=”columnname”)表示列，但要注意的是，你的类必须继承com.activeandroid.Model，ActiveAndroid 为你的表创建了一个id字段作为自增长的主键。<br>下面的例子中为 Item 和 Category 分别建表，项目属于种类，一个种类有多个项目。</p>
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>ActiveAndroid使用了标准的构造函数去实例化对象，如果你想自己定义一个构造函数，就必须去定义一个无参构造器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Table</span>(name = <span class="string">"Items"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> <span class="keyword">extends</span> <span class="title">Model</span> </span>&#123;</span><br><span class="line">        <span class="comment">// If name is omitted, then the field name is used.</span></span><br><span class="line">        <span class="meta">@Column</span>(name = <span class="string">"Name"</span>)</span><br><span class="line">        <span class="keyword">public</span> String name;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Column</span>(name = <span class="string">"Category"</span>)</span><br><span class="line">        <span class="keyword">public</span> Category category;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Item</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">super</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Item</span><span class="params">(String name, Category category)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">super</span>();</span><br><span class="line">                <span class="keyword">this</span>.name = name;</span><br><span class="line">                <span class="keyword">this</span>.category = category;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h3><p>在 Item 类中直接创建一个 Category</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Table</span>(name = <span class="string">"Items"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Item</span> <span class="keyword">extends</span> <span class="title">Model</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"Name"</span>)</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"Category"</span>)</span><br><span class="line">    <span class="keyword">public</span> Category category;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 Category 中，通过一个辅助方法来指明与许多 Item 的关系</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Table</span>(name = <span class="string">"Categories"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Category</span> <span class="keyword">extends</span> <span class="title">Model</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"Name"</span>)</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// This method is optional, does not affect the foreign key creation.这个方法是可选的，不影响外键的创建</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Item&gt; <span class="title">items</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getMany(Item.class, <span class="string">"Category"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="加速应用的启动"><a href="#加速应用的启动" class="headerlink" title="加速应用的启动"></a>加速应用的启动</h3><p>ActiveAndroid 通过遍历所有的文件去寻找你的模型类，如果你有许多的依赖关系，这一过程将非常缓慢。可以通过在 AndroidManifest.xml 中明确的指定你的模型类来加速这一过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta-data</span><br><span class="line">    android:name=&quot;AA_MODELS&quot;</span><br><span class="line">    android:value=&quot;com.myapp.model.Item, com.myapp.model.Category&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="保存数据"><a href="#保存数据" class="headerlink" title="保存数据"></a>保存数据</h2><h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>创建一个实例，为变量赋值，然后调用 .save()方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Category restaurants = new Category();</span><br><span class="line">restaurants.name = &quot;Restaurants&quot;;</span><br><span class="line">restaurants.save();</span><br></pre></td></tr></table></figure>
+<p>创建一条 Item 记录，为它分配 category。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Item item = new Item();</span><br><span class="line">item.category = restaurants;</span><br><span class="line">item.name = &quot;Outback Steakhouse&quot;;</span><br><span class="line">item.save();</span><br></pre></td></tr></table></figure>
+<h3 id="批量插入"><a href="#批量插入" class="headerlink" title="批量插入"></a>批量插入</h3><p>在同一时间插入多条数据可以使用事务，调用事务可以加速大约100倍。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ActiveAndroid.beginTransaction();</span><br><span class="line">try &#123;</span><br><span class="line">        for (int i = 0; i &lt; 100; i++) &#123;</span><br><span class="line">            Item item = new Item();</span><br><span class="line">            item.name = &quot;Example &quot; + i;</span><br><span class="line">            item.save();</span><br><span class="line">        &#125;</span><br><span class="line">        ActiveAndroid.setTransactionSuccessful();</span><br><span class="line">&#125;</span><br><span class="line">finally &#123;</span><br><span class="line">        ActiveAndroid.endTransaction();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new Update(Item.class).set(&quot;&quot;).where(&quot;name=?&quot;).excute();</span><br></pre></td></tr></table></figure>
+<h2 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h2><p>三种形式去删除一条记录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Item item = Item.load(Item.class, 1);</span><br><span class="line">item.delete();</span><br><span class="line">Item.delete(Item.class,1);</span><br><span class="line">new Delete().from(Item.class).where(&quot;Id = ?&quot;, 1).execute();</span><br></pre></td></tr></table></figure>
+<h2 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h2><p>从数据库中随机获得一个 item</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static Item getRandom() &#123;</span><br><span class="line">    return new Select().from(Item.class).orderBy(&quot;RANDOM()&quot;).executeSingle();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>获得所有的 item，通过 name 排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public static List&lt;Item&gt; getAll(Category category) &#123;</span><br><span class="line">    return new Select()</span><br><span class="line">        .from(Item.class)</span><br><span class="line">        .where(&quot;Category = ?&quot;, category.getId())</span><br><span class="line">        .orderBy(&quot;Name ASC&quot;)</span><br><span class="line">        .execute();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="数据库升级"><a href="#数据库升级" class="headerlink" title="数据库升级"></a>数据库升级</h2><p>每当你的数据库模式更新后，你都需要去增加数据库版本号，通过 Configuration 或者是 AA_DB_VERSION，如果新添加了表，ActiveAndroid 会自动添加到数据库。如果你想改变一些已经存在的表（例如添加列，或是更改一个表的名字），你就需要在 <code>assets/migrations</code> 目录下添加一个sql脚本NewVersion.sql，这个 NewVersion 就是 AA_DB_VERSION。<br>ActiveAndroid 将会执行这个脚本，当脚本名&gt;旧的数据库版本并且&lt;=新的版本。<br>假设你要添加一个列 color 给Items表，你需要去增加AA_DB_VERSION，例如原先是1，那么改为2，然后提供一个脚本 2.sql：</p>
+<p>ALTER TABLE Items ADD COLUMN color INTEGER;<br>删除一个表，例如Users：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP TABLE Users;</span><br></pre></td></tr></table></figure>
+<p>修改表结构，<br>Note：Sql命令必须是大写，如果是小些，例如drop table Users，就会出错：</p>
+<blockquote>
+</blockquote>
+<p>Error:Execution failed for task ‘:app:packageDebug’.<br>java.io.FileNotFoundException: G:\javaAndroid\Mine\MyApplication3\app\build\intermediates\assets\debug\migrations (拒绝访问。)</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://stormzhang.com/openandroid/android/sqlite/2013/12/20/android-orm-tools-activeandroid/" target="_blank" rel="noopener">ActiveAndroid—Android轻量级ORM框架</a><br><br><a href="https://www.zybuluo.com/flyouting/note/6915" target="_blank" rel="noopener">Android ORM 框架之 ActiveAndroid</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/数据库/" rel="tag"># 数据库</a>
+          
+            <a href="/tags/ORM/" rel="tag"># ORM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/05/Gson的使用与学习/" rel="next" title="Gson的使用与学习">
+                <i class="fa fa-chevron-left"></i> Gson的使用与学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/12/Git中-gitignore的语法规范/" rel="prev" title="Git中.gitignore的语法规范">
+                Git中.gitignore的语法规范 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wavever</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wavever" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wavever.ht@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/4736526/wavever" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建数据库模型"><span class="nav-number">2.</span> <span class="nav-text">创建数据库模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数"><span class="nav-number">2.1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系"><span class="nav-number">2.2.</span> <span class="nav-text">关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加速应用的启动"><span class="nav-number">2.3.</span> <span class="nav-text">加速应用的启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#保存数据"><span class="nav-number">3.</span> <span class="nav-text">保存数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#插入"><span class="nav-number">3.1.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批量插入"><span class="nav-number">3.2.</span> <span class="nav-text">批量插入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新数据"><span class="nav-number">4.</span> <span class="nav-text">更新数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除数据"><span class="nav-number">5.</span> <span class="nav-text">删除数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询数据"><span class="nav-number">6.</span> <span class="nav-text">查询数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库升级"><span class="nav-number">7.</span> <span class="nav-text">数据库升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wavever</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
