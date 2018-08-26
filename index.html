@@ -327,15 +327,14 @@
 
       
         
-          
-            <p>最近换了个 mac😄，因为之前没有用过 macOS 系统，所以包括搭建开发环境和安装一些软件都得去搜索如何安装，本篇博客主要记录一下如何在换机器或是重装系统时转移博客内容，防止下次需要用时还要到处搜索。</p>
-<h3 id="安装-Nodejs"><a href="#安装-Nodejs" class="headerlink" title="安装 Nodejs"></a>安装 Nodejs</h3><p>博客是使用 <a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">Hexo</a> 搭建，因此首先需要去按转 <a href="http://nodejs.cn/download/" target="_blank" rel="noopener">NodeJs</a> ，在 macOS 上，可以选择使用官网下载压缩包或是使用 homebrew 安装：<br><br><code>homebrew install node</code></p>
-<h3 id="安装-Hexo"><a href="#安装-Hexo" class="headerlink" title="安装 Hexo"></a>安装 Hexo</h3><p><code>npm install hexo-cli -g</code><br>进入到想生成博客的文件夹或是填入路径：<br><br><code>hexo init</code><br><br>或是<code>hexo init path</code><br><br>生成静态文件：<code>hexo generate</code></p>
-<h3 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h3><p>安装 <a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">next</a> 主题<br><br><code>$ git clone --branch v5.1.2 https://github.com/iissnan/hexo-theme-next themes/next</code><br>主题可以通过更改配置文件来修改配置，如果之前已经使用过该主题，直接可以将之前的配置文件拷贝过来进行覆盖，不过如果之前主题版本较老，还是需要和新版本主题配置文件对比一下的。</p>
-<h3 id="转移博客内容"><a href="#转移博客内容" class="headerlink" title="转移博客内容"></a>转移博客内容</h3><p>复制 _post 文件夹至新地址进行覆盖，如果有关于或是分类等页面，可以生成对应 <code>hexo new page &quot;about&quot;</code> 页面后复制之前的 index.md 覆盖。</p>
-<h3 id="生成、部署博客"><a href="#生成、部署博客" class="headerlink" title="生成、部署博客"></a>生成、部署博客</h3><p>使用命令：<br><code>hexo g</code> 以及 <code>hexo d</code><br><br>或是直接使用：<br><code>hexo d -g</code><br>此时，如果出现错误：error deployer not found:git ，需要去安装 git 部署工具：<br><code>npm install hexo-deployer-git --save</code><br><br><br>大功告成～可以在新机器上愉快的玩耍了😄</p>
-
-          
+          <p>最近换了个 mac😄，因为之前没有用过 macOS 系统，所以包括搭建开发环境和安装一些软件都得去搜索如何安装，本篇博客主要记录一下如何在换机器或是重装系统时转移博客内容，防止下次需要用时还要到处搜索。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/08/26/Hexo-博客记录/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
