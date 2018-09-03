@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="wavever的博客">
 <meta property="og:description" content="以前一直对算法的时间复杂度理解的不够透彻，因为在看到一些算法的时间复杂度与自己想的不一样时，常常一头雾水，今日在阅读《大话数据结构》相关内容后，忽然有种豁然开朗的感觉，特此记录一下～">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-01T15:18:46.267Z">
+<meta property="og:updated_time" content="2018-09-03T15:56:08.542Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解算法时间复杂度">
 <meta name="twitter:description" content="以前一直对算法的时间复杂度理解的不够透彻，因为在看到一些算法的时间复杂度与自己想的不一样时，常常一头雾水，今日在阅读《大话数据结构》相关内容后，忽然有种豁然开朗的感觉，特此记录一下～">
@@ -360,7 +360,7 @@
 <p><strong><em>Tips</em></strong>：一般在没有特殊说明的情况下，时间复杂度都是指最坏时间复杂度。</p>
 <p>例如，计算 1～n 的总和：<br>sum=(1+n)*n/2 无论n多大，该函数的执行次数均为1</p>
 <h3 id="推导"><a href="#推导" class="headerlink" title="推导"></a>推导</h3><p>如何准确的推导出一个算法的时间复杂度，这个也是之前自己比较容易混淆的地方，总体而言，主要有三个：<br>1、用常数1代替所有加法常数；<br>2、只保留最高阶项；<br>3、除以与最高阶项相乘的常数。</p>
-<h3 id="常见的时间复杂度"><a href="#常见的时间复杂度" class="headerlink" title="常见的时间复杂度"></a>常见的时间复杂度</h3><p>O(1) 常数阶<br>算法执行次数与n的大小无关，执行时间恒定，如计算1～n的总和；<br>O(n) 线性阶<br>算法执行次数与n称线性关系，如for循环；<br>O(logn) 对数阶<br>O(n2) 平方阶<br>如 双层循环<br>时间复杂度所消耗时间大小排序：<br>O(1)&lt;O(logn)&lt;O(n)&lt;O(nlogn)&lt;O(n2)&lt;O(n3)&lt;O(2n)&lt;O(n!)&lt;O(nn)</p>
+<h3 id="常见的时间复杂度"><a href="#常见的时间复杂度" class="headerlink" title="常见的时间复杂度"></a>常见的时间复杂度</h3><p>O(1) 常数阶<br>算法执行次数与n的大小无关，执行时间恒定，如计算1～n的总和；<br>O(n) 线性阶<br>算法执行次数与n称线性关系，如单层 for 循环；<br>O(n2) 平方阶<br>如 双层 for 循环；<br>时间复杂度所消耗时间大小排序：<br>O(1)&lt;O(logn)&lt;O(n)&lt;O(nlogn)&lt;O($n^2$)&lt;O($n^3$)&lt;O($2^n$)&lt;O(n!)&lt;O($n^n$)</p>
 <h3 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h3><blockquote>
 <p>算法的空间复杂度通过计算算法所需的存储空间实现，算法空间复杂度的计算公式计作：S(n)=O(f(n))，其中n为问题的规模，f(n)为语句关于n所占存储空间的函数。</p>
 </blockquote>
