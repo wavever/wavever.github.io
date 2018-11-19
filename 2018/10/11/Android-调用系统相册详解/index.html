@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很简单，如选择头像，所以只需要调用系统功能来实现即可。">
+<meta name="description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。">
 <meta name="keywords" content="Android,Intent">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android 中调用系统相册获取和裁剪图片">
 <meta property="og:url" content="wavever.github.io/2018/10/11/Android-调用系统相册详解/index.html">
 <meta property="og:site_name" content="wavever的博客">
-<meta property="og:description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很简单，如选择头像，所以只需要调用系统功能来实现即可。">
+<meta property="og:description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-14T09:54:51.295Z">
+<meta property="og:updated_time" content="2018-11-11T01:09:21.063Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android 中调用系统相册获取和裁剪图片">
-<meta name="twitter:description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很简单，如选择头像，所以只需要调用系统功能来实现即可。">
+<meta name="twitter:description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。">
 
 
 
@@ -350,9 +350,9 @@
       
 
       
-        <p>从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 <a href="https://github.com/zhihu/Matisse" target="_blank" rel="noopener">Matisse</a>、B站的 <a href="https://github.com/Bilibili/boxing" target="_blank" rel="noopener">boxing</a> 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 <a href="https://github.com/Yalantis/uCrop" target="_blank" rel="noopener">uCrop</a> 等。但有时候，因为所需选择图片的功能很简单，如选择头像，所以只需要调用系统功能来实现即可。<br><a id="more"></a></p>
+        <p>从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 <a href="https://github.com/zhihu/Matisse" target="_blank" rel="noopener">Matisse</a>、B站的 <a href="https://github.com/Bilibili/boxing" target="_blank" rel="noopener">boxing</a> 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 <a href="https://github.com/Yalantis/uCrop" target="_blank" rel="noopener">uCrop</a> 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。<br><a id="more"></a></p>
 <h2 id="选择图片"><a href="#选择图片" class="headerlink" title="选择图片"></a>选择图片</h2><h3 id="从图库选择"><a href="#从图库选择" class="headerlink" title="从图库选择"></a>从图库选择</h3><p><a href="https://developer.android.google.cn/reference/android/content/Intent#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener">ACTION_OPEN_DOCUMENT</a></p>
-<h3 id="Uri"><a href="#Uri" class="headerlink" title="Uri"></a>Uri</h3><h3 id="Permission"><a href="#Permission" class="headerlink" title="Permission"></a>Permission</h3><h3 id="FileProvider"><a href="#FileProvider" class="headerlink" title="FileProvider"></a>FileProvider</h3><h2 id="裁剪图片"><a href="#裁剪图片" class="headerlink" title="裁剪图片"></a>裁剪图片</h2>
+<h3 id="拍照"><a href="#拍照" class="headerlink" title="拍照"></a>拍照</h3><h3 id="Uri"><a href="#Uri" class="headerlink" title="Uri"></a>Uri</h3><h3 id="Permission"><a href="#Permission" class="headerlink" title="Permission"></a>Permission</h3><h3 id="FileProvider"><a href="#FileProvider" class="headerlink" title="FileProvider"></a>FileProvider</h3><h2 id="裁剪图片"><a href="#裁剪图片" class="headerlink" title="裁剪图片"></a>裁剪图片</h2>
       
     </div>
     
@@ -473,7 +473,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -495,7 +495,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -550,7 +550,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#选择图片"><span class="nav-number">1.</span> <span class="nav-text">选择图片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从图库选择"><span class="nav-number">1.1.</span> <span class="nav-text">从图库选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Uri"><span class="nav-number">1.2.</span> <span class="nav-text">Uri</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Permission"><span class="nav-number">1.3.</span> <span class="nav-text">Permission</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FileProvider"><span class="nav-number">1.4.</span> <span class="nav-text">FileProvider</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#裁剪图片"><span class="nav-number">2.</span> <span class="nav-text">裁剪图片</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#选择图片"><span class="nav-number">1.</span> <span class="nav-text">选择图片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从图库选择"><span class="nav-number">1.1.</span> <span class="nav-text">从图库选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拍照"><span class="nav-number">1.2.</span> <span class="nav-text">拍照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Uri"><span class="nav-number">1.3.</span> <span class="nav-text">Uri</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Permission"><span class="nav-number">1.4.</span> <span class="nav-text">Permission</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FileProvider"><span class="nav-number">1.5.</span> <span class="nav-text">FileProvider</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#裁剪图片"><span class="nav-number">2.</span> <span class="nav-text">裁剪图片</span></a></li></ol></div>
             
 
           </div>

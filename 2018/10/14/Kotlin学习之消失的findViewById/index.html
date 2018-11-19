@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Kotlin作为Google官方目前极力推荐的语言，">
+<meta name="description" content="刚使用 Kotlin 的时候，感觉到处都充满了惊喜，也处处充满了不习惯，但总体来说语法糖带来的快乐还是要远大于痛苦的，之前学习 Kotlin 一直是在代码里写写，没有涉及到 UI，因此今天需要使用控件，当习惯性的输入 findViewById 时发现编译器没有任何提示时就懵逼了，人间惨剧：消失不见的 findViewById 正式上演。。">
 <meta name="keywords" content="Android,Kotlin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kotlin学习之消失的findViewById">
 <meta property="og:url" content="wavever.github.io/2018/10/14/Kotlin学习之消失的findViewById/index.html">
 <meta property="og:site_name" content="wavever的博客">
-<meta property="og:description" content="Kotlin作为Google官方目前极力推荐的语言，">
+<meta property="og:description" content="刚使用 Kotlin 的时候，感觉到处都充满了惊喜，也处处充满了不习惯，但总体来说语法糖带来的快乐还是要远大于痛苦的，之前学习 Kotlin 一直是在代码里写写，没有涉及到 UI，因此今天需要使用控件，当习惯性的输入 findViewById 时发现编译器没有任何提示时就懵逼了，人间惨剧：消失不见的 findViewById 正式上演。。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-14T16:01:38.445Z">
+<meta property="og:updated_time" content="2018-11-19T16:59:04.553Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kotlin学习之消失的findViewById">
-<meta name="twitter:description" content="Kotlin作为Google官方目前极力推荐的语言，">
+<meta name="twitter:description" content="刚使用 Kotlin 的时候，感觉到处都充满了惊喜，也处处充满了不习惯，但总体来说语法糖带来的快乐还是要远大于痛苦的，之前学习 Kotlin 一直是在代码里写写，没有涉及到 UI，因此今天需要使用控件，当习惯性的输入 findViewById 时发现编译器没有任何提示时就懵逼了，人间惨剧：消失不见的 findViewById 正式上演。。">
 
 
 
@@ -350,7 +350,11 @@
       
 
       
-        <p>Kotlin作为Google官方目前极力推荐的语言，<br><a id="more"></a><br>但当我习惯性的输入findViewById的时候，发现并没有提示我该方法，<br><code>import kotlinx.android.synthetic.main.activity_main.*</code></p>
+        <p>刚使用 Kotlin 的时候，感觉到处都充满了惊喜，也处处充满了不习惯，但总体来说语法糖带来的快乐还是要远大于痛苦的，之前学习 Kotlin 一直是在代码里写写，没有涉及到 UI，因此今天需要使用控件，当习惯性的输入 <code>findViewById</code> 时发现编译器没有任何提示时就懵逼了，人间惨剧：消失不见的 <code>findViewById</code> 正式上演。。<br><a id="more"></a><br>在包含控件非常多的 Activity 或是 Fragment 中，经常会看到排排坐的 <code>findViewById</code>，虽然看着工整，但写起来的痛苦真的是谁写谁知道啊，虽然使用<a href="https://github.com/JakeWharton/butterknife" target="_blank" rel="noopener">黄油刀</a>可以来避免这一问题，但其实就代码而言是没有什么改变的，还是需要去重复的 <code>@BindView</code>。<br>在一番Google大法后，我不禁喊出了一声卧槽，怎么在 Kotlin 中直接用 View 的 ID 就可以直接使用 View 了么？？？</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>首先需要在App 的 build.gradle 中引入 <code>kotlin-android-extensions</code> 插件：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: <span class="string">'kotlin-android'</span></span><br><span class="line">apply plugin: <span class="string">'kotlin-android-extensions'</span></span><br></pre></td></tr></table></figure></p>
+<p>此时，假如有个 id 为 testTitle 的 TextView，想要使用它，只需要在对应的 Activity 或是 Fragment 中直接输入 ID 即可，就像使用成员变量一样方便，而完成这一步，需要引入下面这句：<br><code>import kotlinx.android.synthetic.main.activity_main.*</code><br>这个在输入 ID 时会被自动导入，因此不用自己手动去导入。</p>
+<h2 id="背后玄机"><a href="#背后玄机" class="headerlink" title="背后玄机"></a>背后玄机</h2><p>其实背后的奥秘，看一下反编译后的 Kotlin 代码就一目了然了，通过点击 Android Stuio 的 Tools –&gt; Kotlin –&gt; Show Kotlin Bytecode，可以看到编译期间对应 Kotlin 文件生成的 Java 代码，主要关注其中的 <code>findCachedViewById</code> 方法，在使用 ID 的地方，都其实是使用 <code>findCachedViewById</code> 来获取 View 的，而且还会在第一次获取到后，对 View 做一个缓存，保证了不会每次调用 ID 都去调用 <code>findViewById</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> View _$_findCachedViewById(<span class="keyword">int</span> var1) &#123;</span><br><span class="line">   <span class="keyword">if</span> (<span class="keyword">this</span>._$_findViewCache == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>._$_findViewCache = <span class="keyword">new</span> HashMap();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   View var2 = (View)<span class="keyword">this</span>._$_findViewCache.get(var1);</span><br><span class="line">   <span class="keyword">if</span> (var2 == <span class="keyword">null</span>) &#123;</span><br><span class="line">      var2 = <span class="keyword">this</span>.findViewById(var1);</span><br><span class="line">      <span class="keyword">this</span>._$_findViewCache.put(var1, var2);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> var2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://antonioleiva.com/kotlin-android-extensions/" target="_blank" rel="noopener">Kotlin Android Extensions: Say goodbye to findViewById</a></p>
 
       
     </div>
@@ -392,6 +396,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/11/再看艺术开发探索之Activity的生命周期和启动模式/" rel="prev" title="再看艺术开发探索之Activity的生命周期和启动模式">
+                再看艺术开发探索之Activity的生命周期和启动模式 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -443,8 +451,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -459,7 +476,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -481,7 +498,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -526,6 +543,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#背后玄机"><span class="nav-number">2.</span> <span class="nav-text">背后玄机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
