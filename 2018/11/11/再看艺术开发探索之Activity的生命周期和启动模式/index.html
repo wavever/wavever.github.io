@@ -88,7 +88,7 @@
 <meta property="og:description" content="Activity 作为四大组件之一，也是平常接触最多的，以前对于 Activity 的使用其实也有点人云亦云，只知道要在 onCreate() 里去做一些初始化工作，不要在 onResume() 或是 onPause() 中做一些耗时操作，总之就是，别人怎么做，我也怎么做，没有想过为什么要这么做，在通读了 Android 开发艺术探索第一章之后，对于 Activity 的了解深入了一点，也解答了自">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://developer.android.com/images/activity_lifecycle.png?hl=zh-cn">
-<meta property="og:updated_time" content="2018-11-20T17:52:43.899Z">
+<meta property="og:updated_time" content="2018-11-21T17:37:42.348Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="再看艺术开发探索之Activity的生命周期和启动模式">
 <meta name="twitter:description" content="Activity 作为四大组件之一，也是平常接触最多的，以前对于 Activity 的使用其实也有点人云亦云，只知道要在 onCreate() 里去做一些初始化工作，不要在 onResume() 或是 onPause() 中做一些耗时操作，总之就是，别人怎么做，我也怎么做，没有想过为什么要这么做，在通读了 Android 开发艺术探索第一章之后，对于 Activity 的了解深入了一点，也解答了自">
@@ -364,10 +364,32 @@
 <li><code>onDestory()</code> Activity 即将被销毁，生命周期的最后一个回调方法</li>
 <li><code>onRestart()</code> Activity 正在重新启动，当 Activity 由不可见状态重新变为可见状态时调用，如进入新的界面后按 Back 返回</li>
 </ul>
-<h3 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h3><p>点击 Home 键退出至桌面：<code>onPause()</code> –&gt; <code>onStop()</code><br><br>点击 Back 键退出：<code>onPause()</code> –&gt; <code>onStop()</code> –&gt; <code>onDestory()</code><br><br>当打开新的 Activity 采用了透明主题时，当前 Activity 不会调用 <code>onStop()</code><br><code>onSaveInstanceState()</code> 调用时机为 <code>onStop()</code> 之前，但和 <code>onPause()</code> 没有既定的时序关系<br><code>onRestoreInstanceState()</code> 调用时机在 <code>onStart()</code> 之后<br><code>onRestoreInstanceState()</code> 被调用时，其 Bundle 参数一定有值，<code>onCreate()</code> 的 Bundle 参数如果正常启动为 null</p>
+<h3 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h3><ul>
+<li>点击 Home 键退出至桌面：<code>onPause()</code> –&gt; <code>onStop()</code></li>
+<li>点击 Back 键退出：<code>onPause()</code> –&gt; <code>onStop()</code> –&gt; <code>onDestory()</code></li>
+<li>当打开新的 Activity 采用了透明主题时，当前 Activity 不会调用 <code>onStop()</code><br><code>onSaveInstanceState()</code> 调用时机为 <code>onStop()</code> 之前，但和 <code>onPause()</code> 没有既定的时序关系</li>
+<li><code>onRestoreInstanceState()</code> 调用时机在 <code>onStart()</code> 之后</li>
+<li><code>onRestoreInstanceState()</code> 被调用时，其 Bundle 参数一定有值，<code>onCreate()</code> 的 Bundle 参数如果正常启动为 null</li>
+</ul>
 <h2 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h2><h3 id="Standard"><a href="#Standard" class="headerlink" title="Standard"></a>Standard</h3><p>标准模式，当没有 Activity 配置启动模式时，默认为这个，多次启动同一 Activity 会创建多个实例，如果 B 为标准模式，A 启动 B，则 B 会加入到 A 所在的栈中。使用 ApplicationContext 启动标准模式的 Activity 会报错，因为非 Activity 类型的 Context 没有任务栈。</p>
+<p>####示例<br>A 启动 B，当前 A 的栈内为 AB，则启动完成后，栈内为 ABB</p>
 <h3 id="SingleTop"><a href="#SingleTop" class="headerlink" title="SingleTop"></a>SingleTop</h3><p>栈顶复用模式，如果被启动 Activity 已处于栈顶，则不会被重新创建，同时 <code>onNewIntent()</code> 会被调用，可以获取到 Intent，<code>onCreate()</code> 和 <code>onStart()</code> 不会调用，<code>onResume()</code> 会被调用。</p>
-<h3 id="SingleTask"><a href="#SingleTask" class="headerlink" title="SingleTask"></a>SingleTask</h3><h3 id="SingleInstance"><a href="#SingleInstance" class="headerlink" title="SingleInstance"></a>SingleInstance</h3><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://developer.android.com/guide/components/activities?hl=zh-cn" target="_blank" rel="noopener">Activity</a></p>
+<p>####示例<br>启动 B，当前栈内为 ABCD ，则启动完成后为 ABCDB， 如果时 AB，则启动完成后还是 AB，回调 <code>onNewIntent()</code></p>
+<h3 id="SingleTask"><a href="#SingleTask" class="headerlink" title="SingleTask"></a>SingleTask</h3><p>栈内复用模式，只要存在于栈中，则不会被重新创建，且也会回调 <code>onNewIntent()</code> ，默认具有 clearTop 效果，会导致所有位于要启动 Activity 上面的 Activity 都出栈。</p>
+<p>####示例</p>
+<ul>
+<li>S1 栈中为 ABC，此时启动 属于任务栈 S2 的 D，如果 S2 不存在，则会创建任务栈 S2，然后将 D 加入 S2</li>
+<li>S1 栈中为 ABCD，此时启动 属于任务栈 S2 的 B，则 B 不会重新创建，会将 CD 出栈，只剩下 AB</li>
+</ul>
+<h4 id="任务栈"><a href="#任务栈" class="headerlink" title="任务栈"></a>任务栈</h4><p>任务栈分为前台任务栈和后台任务栈，后台任务栈中的 Activity 处于暂停状态，用户可以通过切换将后台任务栈再次调到前台，当后台任务栈中的 Activity 被启动时，整个后台任务栈都会被切换到前台。<br>可以通过命令 <code>adb shell dumpsys activity</code> 来查看当前的所有 Activity 信息，通过搜索 <strong>Running</strong> 关键字来查询当前运行的 Activity 以及它的任务栈。<br>默认情况下所有 Activity 的任务栈的名字都是应用的包名，可以通过指定 <code>TaskAffinity</code> 属性来指定任务栈，任务栈在 SingleTask 模式下非常重要，例如在一个 Launcher 应用中，Launcher Activity有独立任务栈，A、B 启动模式都为SingleTask 且未指定任务栈，先启动 A，然后点 Home 键，接着启动 B，此时点击 Back 键，会发现回到了 A，这就是因为都没有指定任务栈，所以加入到了默认的栈中，因此在使用这种模式时，特定情况下，需要去指定任务栈。</p>
+<h3 id="SingleInstance"><a href="#SingleInstance" class="headerlink" title="SingleInstance"></a>SingleInstance</h3><p>单实例模式，具有该模式的 Activity 单独处于一个任务栈中，可以理解为不需要手动设置任务栈的 singleTask 模式。</p>
+<h3 id="设置"><a href="#设置" class="headerlink" title="设置"></a>设置</h3><p>指定启动模式有两种方式，一种是在 Manifest 文件中注册 Activity 时添加 <code>launchMode</code> 属性，还有就是在启动 Activity 时，给 Intent 设置标志位，例如设置 singleTask 则可以给 <code>Intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</code> 标识位。</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><ul>
+<li>当两种方式都存在时，以第二种方式为准；</li>
+<li>第一种方式无法添加 <code>FLAG_ACTIVITY_CLEAR_TOP</code> 标识；</li>
+<li>第二种方式无法指定 SingleInstance 模式。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://developer.android.com/guide/components/activities?hl=zh-cn" target="_blank" rel="noopener">Activity</a></p>
 
       
     </div>
@@ -564,7 +586,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">1.</span> <span class="nav-text">生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特殊情况"><span class="nav-number">1.1.</span> <span class="nav-text">特殊情况</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动模式"><span class="nav-number">2.</span> <span class="nav-text">启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Standard"><span class="nav-number">2.1.</span> <span class="nav-text">Standard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SingleTop"><span class="nav-number">2.2.</span> <span class="nav-text">SingleTop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SingleTask"><span class="nav-number">2.3.</span> <span class="nav-text">SingleTask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SingleInstance"><span class="nav-number">2.4.</span> <span class="nav-text">SingleInstance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">1.</span> <span class="nav-text">生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特殊情况"><span class="nav-number">1.1.</span> <span class="nav-text">特殊情况</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动模式"><span class="nav-number">2.</span> <span class="nav-text">启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Standard"><span class="nav-number">2.1.</span> <span class="nav-text">Standard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SingleTop"><span class="nav-number">2.2.</span> <span class="nav-text">SingleTop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SingleTask"><span class="nav-number">2.3.</span> <span class="nav-text">SingleTask</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#任务栈"><span class="nav-number">2.3.1.</span> <span class="nav-text">任务栈</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SingleInstance"><span class="nav-number">2.4.</span> <span class="nav-text">SingleInstance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置"><span class="nav-number">2.5.</span> <span class="nav-text">设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注意"><span class="nav-number">2.5.1.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
