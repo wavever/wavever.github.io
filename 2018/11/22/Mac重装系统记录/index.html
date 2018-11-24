@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Android,Intent," />
+  <meta name="keywords" content="Note,Mac," />
 
 
 
@@ -79,18 +79,22 @@
 
 
 
-<meta name="description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。">
-<meta name="keywords" content="Android,Intent">
+<meta name="description" content="如题，只是简单做个记录而已～或许以后还用的上。。">
+<meta name="keywords" content="Note,Mac">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android 中调用系统相册获取和裁剪图片">
-<meta property="og:url" content="wavever.github.io/2018/10/11/Android-调用系统相册详解/index.html">
+<meta property="og:title" content="Mac重装系统记录">
+<meta property="og:url" content="wavever.github.io/2018/11/22/Mac重装系统记录/index.html">
 <meta property="og:site_name" content="wavever的博客">
-<meta property="og:description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。">
+<meta property="og:description" content="如题，只是简单做个记录而已～或许以后还用的上。。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-11T01:09:21.063Z">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006VU4N2gy1fxjkzxg3moj33281j4kjl.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006VU4N2gy1fxjl6q7za9j31o00u0q4l.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006VU4N2gy1fxjl99qignj31o00u0ace.jpg">
+<meta property="og:updated_time" content="2018-11-24T15:58:10.184Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android 中调用系统相册获取和裁剪图片">
-<meta name="twitter:description" content="从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 Matisse、B站的 boxing 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 uCrop 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。">
+<meta name="twitter:title" content="Mac重装系统记录">
+<meta name="twitter:description" content="如题，只是简单做个记录而已～或许以后还用的上。。">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006VU4N2gy1fxjkzxg3moj33281j4kjl.jpg">
 
 
 
@@ -120,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="wavever.github.io/2018/10/11/Android-调用系统相册详解/"/>
+  <link rel="canonical" href="wavever.github.io/2018/11/22/Mac重装系统记录/"/>
 
 
 
 
 
-  <title>Android 中调用系统相册获取和裁剪图片 | wavever的博客</title>
+  <title>Mac重装系统记录 | wavever的博客</title>
   
 
 
@@ -261,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="wavever.github.io/2018/10/11/Android-调用系统相册详解/">
+    <link itemprop="mainEntityOfPage" href="wavever.github.io/2018/11/22/Mac重装系统记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wavever">
@@ -278,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Android 中调用系统相册获取和裁剪图片</h1>
+          <h1 class="post-title" itemprop="name headline">Mac重装系统记录</h1>
         
 
         <div class="post-meta">
@@ -290,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-11T00:07:18+08:00">
-                2018-10-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-22T01:41:05+08:00">
+                2018-11-22
               </time>
             
 
@@ -313,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/Notes/" itemprop="url" rel="index">
+                    <span itemprop="name">Notes</span>
                   </a>
                 </span>
 
@@ -350,9 +354,10 @@
       
 
       
-        <p>从图库或是相机来获取图片是一个高频的使用场景，为了保证在不同设备上的 UI 统一和避免不同 Rom 上可能出现的问题，很多应用都选择了自己实现该部分功能，如知乎的 <a href="https://github.com/zhihu/Matisse" target="_blank" rel="noopener">Matisse</a>、B站的 <a href="https://github.com/Bilibili/boxing" target="_blank" rel="noopener">boxing</a> 等，图片裁剪在 GitHub 上也有一些比较著名的库，如 <a href="https://github.com/Yalantis/uCrop" target="_blank" rel="noopener">uCrop</a> 等。但有时候，因为所需选择图片的功能很单一，如只需要一个选择头像功能，这时候就可以通过调用系统提供的功能来实现。<br><a id="more"></a></p>
-<h2 id="选择图片"><a href="#选择图片" class="headerlink" title="选择图片"></a>选择图片</h2><h3 id="从图库选择"><a href="#从图库选择" class="headerlink" title="从图库选择"></a>从图库选择</h3><p><a href="https://developer.android.google.cn/reference/android/content/Intent#ACTION_OPEN_DOCUMENT" target="_blank" rel="noopener">ACTION_OPEN_DOCUMENT</a></p>
-<h3 id="拍照"><a href="#拍照" class="headerlink" title="拍照"></a>拍照</h3><h3 id="Uri"><a href="#Uri" class="headerlink" title="Uri"></a>Uri</h3><h3 id="Permission"><a href="#Permission" class="headerlink" title="Permission"></a>Permission</h3><h3 id="FileProvider"><a href="#FileProvider" class="headerlink" title="FileProvider"></a>FileProvider</h3><h2 id="裁剪图片"><a href="#裁剪图片" class="headerlink" title="裁剪图片"></a>裁剪图片</h2>
+        <p>如题，只是简单做个记录而已～或许以后还用的上。。<br><a id="more"></a></p>
+<p>在 AppStore 里下载最新的 macOS 安装包；<br>将U盘命名为 Sierra，格式化：<br><img src="http://ww1.sinaimg.cn/large/006VU4N2gy1fxjkzxg3moj33281j4kjl.jpg" alt=""><br>在终端输入命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /Applications/Install\ macOS\ High\ Sierra.app/Contents/Resources/createinstallmedia --volume /Volumes/Sierra --applicationpath /Applications/Install\ macOS\ High\ Sierra.app --nointeraction</span><br></pre></td></tr></table></figure></p>
+<p>等到命令执行完成后，关机，开机后按住 <code>option</code> 键选择安装盘，此时选择 <code>EFI Boot</code>；<br>在 macOS 实用工具中选择磁盘工具：<br><img src="http://ww1.sinaimg.cn/large/006VU4N2gy1fxjl6q7za9j31o00u0q4l.jpg" alt=""><br>抹掉磁盘，名称为磁盘名称，格式和方案不动即可，抹掉后退出磁盘工具；<br><img src="http://ww1.sinaimg.cn/large/006VU4N2gy1fxjl99qignj31o00u0ace.jpg" alt=""><br>点击安装，一直下一步即可。</p>
+
       
     </div>
     
@@ -369,9 +374,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Android/" rel="tag"># Android</a>
+            <a href="/tags/Note/" rel="tag"># Note</a>
           
-            <a href="/tags/Intent/" rel="tag"># Intent</a>
+            <a href="/tags/Mac/" rel="tag"># Mac</a>
           
         </div>
       
@@ -384,8 +389,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/28/AS-Keymap-in-macOS/" rel="next" title="AS Keymap in macOS">
-                <i class="fa fa-chevron-left"></i> AS Keymap in macOS
+              <a href="/2018/11/11/再看艺术开发探索之Activity的生命周期和启动模式/" rel="next" title="再看艺术开发探索之Activity的生命周期和启动模式">
+                <i class="fa fa-chevron-left"></i> 再看艺术开发探索之Activity的生命周期和启动模式
               </a>
             
           </div>
@@ -393,10 +398,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/14/Kotlin学习之消失的findViewById/" rel="prev" title="Kotlin学习之消失的findViewById">
-                Kotlin学习之消失的findViewById <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -448,17 +449,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -540,22 +532,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#选择图片"><span class="nav-number">1.</span> <span class="nav-text">选择图片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从图库选择"><span class="nav-number">1.1.</span> <span class="nav-text">从图库选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拍照"><span class="nav-number">1.2.</span> <span class="nav-text">拍照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Uri"><span class="nav-number">1.3.</span> <span class="nav-text">Uri</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Permission"><span class="nav-number">1.4.</span> <span class="nav-text">Permission</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FileProvider"><span class="nav-number">1.5.</span> <span class="nav-text">FileProvider</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#裁剪图片"><span class="nav-number">2.</span> <span class="nav-text">裁剪图片</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
