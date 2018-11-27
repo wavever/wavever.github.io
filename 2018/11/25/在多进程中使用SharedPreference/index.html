@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="以前一直是在单进程下使用 SharedPreference ，">
+<meta name="description" content="之前都是使用 SharedPreference 来做一些基本的保存工作，因为都是在同一进程下使用，所以也没有遇到过什么问题，这次偶然间需要在多进程下使用，结果发现在读取时会存在读取不到的问题，因此去看看了源码，找到了问题原因和解决方式，也对 SharedPreference 有了更深的理解，特此记录一下～">
 <meta name="keywords" content="Android,持久化存储">
 <meta property="og:type" content="article">
 <meta property="og:title" content="在多进程中使用 SharedPreference">
 <meta property="og:url" content="wavever.github.io/2018/11/25/在多进程中使用SharedPreference/index.html">
 <meta property="og:site_name" content="wavever的博客">
-<meta property="og:description" content="以前一直是在单进程下使用 SharedPreference ，">
+<meta property="og:description" content="之前都是使用 SharedPreference 来做一些基本的保存工作，因为都是在同一进程下使用，所以也没有遇到过什么问题，这次偶然间需要在多进程下使用，结果发现在读取时会存在读取不到的问题，因此去看看了源码，找到了问题原因和解决方式，也对 SharedPreference 有了更深的理解，特此记录一下～">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-26T15:37:40.871Z">
+<meta property="og:updated_time" content="2018-11-27T17:12:08.523Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在多进程中使用 SharedPreference">
-<meta name="twitter:description" content="以前一直是在单进程下使用 SharedPreference ，">
+<meta name="twitter:description" content="之前都是使用 SharedPreference 来做一些基本的保存工作，因为都是在同一进程下使用，所以也没有遇到过什么问题，这次偶然间需要在多进程下使用，结果发现在读取时会存在读取不到的问题，因此去看看了源码，找到了问题原因和解决方式，也对 SharedPreference 有了更深的理解，特此记录一下～">
 
 
 
@@ -350,8 +350,13 @@
       
 
       
-        <p>以前一直是在单进程下使用 <code>SharedPreference</code> ，</p>
-
+        <p>之前都是使用 SharedPreference 来做一些基本的保存工作，因为都是在同一进程下使用，所以也没有遇到过什么问题，这次偶然间需要在多进程下使用，结果发现在读取时会存在读取不到的问题，因此去看看了源码，找到了问题原因和解决方式，也对 SharedPreference 有了更深的理解，特此记录一下～<br><a id="more"></a></p>
+<h3 id="SharedPreference-获取"><a href="#SharedPreference-获取" class="headerlink" title="SharedPreference 获取"></a>SharedPreference 获取</h3><p>通常我们都是通过 <code>Context.getSharedPreferences()</code> 来获取 SharedPreference 对象，这个 Context 无论是 Applicatio、 Service 或是 Activity，都是继承自ContextWrapper，通过查看 ContextWrapper 源码，可以看到它的方法内部都是调用了 mBase 的相关方法，而这个 mBase 就是 ContextImpl。在 ContextImpl 可以看到有两种 <code>getSharedPreferences()</code> 方法，第一种就是我们常用的 <code>getSharedPreferences(String name, int mode)</code>，其中 name 为文件名称，也就是生成后保存在 data 目录下的 xml 文件名称，mode  为操作模式，通常我们传入的都是 <code>Context.MODE_PRIVATE</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> SharedPreferences <span class="title">getSharedPreferences</span><span class="params">(String name, <span class="keyword">int</span> mode)</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">synchronized</span> (ContextImpl.class) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mSharedPrefsPaths == <span class="keyword">null</span>) &#123;</span><br><span class="line">                mSharedPrefsPaths = <span class="keyword">new</span> ArrayMap&lt;&gt;();</span><br><span class="line">            &#125;</span><br><span class="line">            file = mSharedPrefsPaths.get(name);</span><br><span class="line">            <span class="keyword">if</span> (file == <span class="keyword">null</span>) &#123;</span><br><span class="line">                file = getSharedPreferencesPath(name);</span><br><span class="line">                mSharedPrefsPaths.put(name, file);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> getSharedPreferences(file, mode);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到其实这里只是去拿了 file 文件，然后调用 <code>getSharedPreferences(file, mode)</code> 方法，</p>
+<h3 id="commit-和-apply"><a href="#commit-和-apply" class="headerlink" title="commit 和 apply"></a>commit 和 apply</h3><p><code>SharedPreference</code> 是一个接口，它的实现是 <code>SharedPreferencesImpl</code>，</p>
+<h3 id="mode"><a href="#mode" class="headerlink" title="mode"></a>mode</h3><p>表明只能被当前应用读写或是分享同一 user ID 的所有应用读写</p>
+<h3 id="多进程中使用"><a href="#多进程中使用" class="headerlink" title="多进程中使用"></a>多进程中使用</h3>
       
     </div>
     
@@ -443,8 +448,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -526,6 +540,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SharedPreference-获取"><span class="nav-number">1.</span> <span class="nav-text">SharedPreference 获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit-和-apply"><span class="nav-number">2.</span> <span class="nav-text">commit 和 apply</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mode"><span class="nav-number">3.</span> <span class="nav-text">mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多进程中使用"><span class="nav-number">4.</span> <span class="nav-text">多进程中使用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
