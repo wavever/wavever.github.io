@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="进制,移位," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近看源码的时候，遇到了各种位运算，又想起之前做的一个面试题也是求解一个包含各种位运算的表达式，这方面的知识点虽说平时可能用到的地方不会太多，但了解完之后发现它可以很方便的去实现一些逻辑，如奇数偶数的判断等。">
+<meta name="keywords" content="进制,移位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊一聊位运算">
+<meta property="og:url" content="wavever.github.io/2019/03/16/躲不开的位运算/index.html">
+<meta property="og:site_name" content="wavever的博客">
+<meta property="og:description" content="最近看源码的时候，遇到了各种位运算，又想起之前做的一个面试题也是求解一个包含各种位运算的表达式，这方面的知识点虽说平时可能用到的地方不会太多，但了解完之后发现它可以很方便的去实现一些逻辑，如奇数偶数的判断等。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-17T15:09:13.263Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊一聊位运算">
+<meta name="twitter:description" content="最近看源码的时候，遇到了各种位运算，又想起之前做的一个面试题也是求解一个包含各种位运算的表达式，这方面的知识点虽说平时可能用到的地方不会太多，但了解完之后发现它可以很方便的去实现一些逻辑，如奇数偶数的判断等。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="wavever.github.io/2019/03/16/躲不开的位运算/"/>
+
+
+
+
+
+  <title>聊一聊位运算 | wavever的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+
+  <div class="container  page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wavever的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">从容不迫，淡定始终。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="wavever.github.io/2019/03/16/躲不开的位运算/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wavever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wavever的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">聊一聊位运算</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-16T13:44:20+08:00">
+                2019-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近看源码的时候，遇到了各种位运算，又想起之前做的一个面试题也是求解一个包含各种位运算的表达式，这方面的知识点虽说平时可能用到的地方不会太多，但了解完之后发现它可以很方便的去实现一些逻辑，如奇数偶数的判断等。<br><a id="more"></a></p>
+<h2 id="进制"><a href="#进制" class="headerlink" title="进制"></a>进制</h2><p>要了解位运算前，还是先回顾一下进制，通俗来说 x进制就是逢x进一，2进制、8进制、10进制和16进制如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">2进制</th>
+<th style="text-align:center">8进制</th>
+<th style="text-align:center">10进制</th>
+<th style="text-align:center">16进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">01</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">100</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+</tr>
+<tr>
+<td style="text-align:center">101</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">5</td>
+</tr>
+<tr>
+<td style="text-align:center">110</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">6</td>
+</tr>
+<tr>
+<td style="text-align:center">111</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">7</td>
+</tr>
+<tr>
+<td style="text-align:center">1000</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">1001</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">9</td>
+</tr>
+<tr>
+<td style="text-align:center">1010</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">A</td>
+</tr>
+<tr>
+<td style="text-align:center">1011</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">B</td>
+</tr>
+<tr>
+<td style="text-align:center">1100</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">C</td>
+</tr>
+<tr>
+<td style="text-align:center">1101</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">D</td>
+</tr>
+<tr>
+<td style="text-align:center">1110</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">E</td>
+</tr>
+<tr>
+<td style="text-align:center">1111</td>
+<td style="text-align:center">17</td>
+<td style="text-align:center">15</td>
+<td style="text-align:center">F</td>
+</tr>
+</tbody>
+</table>
+<h3 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h3><p>那么，他们之间需要如何来转换呢？这里以2进制和10进制的转换为例来进行说明。<br>整数部分，遵循 <strong>除2取余，逆序排列</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">求10进制 123 的 2进制：</span><br><span class="line">123 / 2 = 61 余 1</span><br><span class="line">61  / 2 = 30 余 1</span><br><span class="line">30  / 2 = 15 余 0</span><br><span class="line">15  / 2 = 7  余 1</span><br><span class="line">7   / 2 = 3  余 1</span><br><span class="line">3   / 2 = 1  余 1</span><br><span class="line">1   / 2 = 0  余 1</span><br><span class="line">2进制为：1111011</span><br></pre></td></tr></table></figure></p>
+<p>再看小数部分，遵循 <strong>乘2取整，顺序排列</strong>，即用小数乘2后：取出积中的整数部分，然后用剩下的小数继续去乘2，直到小数部分为0或者是到指定精度为止。</p>
+<p>那么负数怎么转换呢？这个就要提到补码了，为了计算方便，负数在计算机中都是以补码的形式存在，那么 -123 的2进制就为：<code>1111011</code> 的补码即 <code>0000101</code></p>
+<p>那么2进制 <code>1101101</code> 转换为10进制又是多少呢？这里先看下10进制数123，我们将它展开</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">123 = 1 * 100 + 2 * 10 + 3 * 1</span><br><span class="line">    = 1 * 10^2 + 2 * 10^1 + 3 * 10^0  \\ ^ 为 代表阶乘</span><br></pre></td></tr></table></figure>
+<p>很明显就看出了其中的规则，x进制的数 abc 转换为10进制：<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a * x^2 + b * x^1 + c * c^0</span><br></pre></td></tr></table></figure></p>
+<p>那 <code>1101101</code> 转换为10进制也就很容易了：<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1*2^6 + 1*2^5 + 0*2^4 + 1*2^3 + 1*2^2 + 0*2^1 + 1*2^0</span><br><span class="line">	= 1 * 64 +  1 * 32 + 0 * 16 + 1 * 8 + 1 * 4 + 0 * 2 + 1 * 1</span><br><span class="line">	= 109</span><br></pre></td></tr></table></figure></p>
+<p>2进制和8进制以及16进制之间的转换更为方便，我们知道<code>8=2^3</code>，而<code>16=2^4</code>，因此可以分别用3位和4位2进制来表示1位8进制和16进制，位数不够补0，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2进制 1101101 = 2进制 001 101 101 = 8进制 155</span><br><span class="line">2进制 1101101 = 2进制 0110 1101 = 16进制 6D</span><br></pre></td></tr></table></figure></p>
+<h3 id="原码"><a href="#原码" class="headerlink" title="原码"></a>原码</h3><p>数在计算机中的二进制表示，第一位代表符号，0表示正数，1表示负数，如2的原码为 <code>0000 0010</code>，-2的原码为 <code>1000 0010</code></p>
+<h3 id="反码"><a href="#反码" class="headerlink" title="反码"></a>反码</h3><p>正数的反码就是原码，负数的反码为符号位不变，其余位取反，如2的反码为 <code>0000 0010</code>，-2的反码为 <code>1111 1101</code></p>
+<h3 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h3><p>正数的补码就是原码，负数的补码为符号位不变，其余位取反后加一，如2的补码为 <code>0000 0010</code>，-2的补码为 <code>1111 1110</code>，补码保证了当一个数是正数时，其最左的比特位是0，当一个数是负数时，其最左的比特位是1。因此，最左边的比特位被称为符号位，关于补码的作用可以看看阮一峰老师<a href="http://www.ruanyifeng.com/blog/2009/08/twos_complement.html" target="_blank" rel="noopener">这篇文章</a>，个人觉得通俗易懂。</p>
+<h2 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h2><p>搞清楚了进制之间的转换，那么位运算其实也就没有什么难的了，位运算只要有一下几种，使用 Java 代码来进行展示。</p>
+<h3 id="与操作"><a href="#与操作" class="headerlink" title="与操作"></a>与操作</h3><p>在 Java 中操作符为 <code>&amp;</code>，1 与 1 相与为 1，否则为0，如：<code>1101</code> 与 <code>0101</code> 相与结果为 <code>0101</code>。</p>
+<h3 id="或操作"><a href="#或操作" class="headerlink" title="或操作"></a>或操作</h3><p>在 Java 中操作符为 <code>|</code>，0 与 0 相与为 0，否则为1，如：<code>1101</code> 与 <code>0101</code> 相与结果为 <code>0101</code>。</p>
+<h3 id="非操作"><a href="#非操作" class="headerlink" title="非操作"></a>非操作</h3><p>在 Java 中操作符为 <code>～</code>，1 取反为 0，0 取反为 1，如 <code>～5 = -6</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~	0000 0000 0000 0000 0000 0000 0000 0101  5的原码</span><br><span class="line">	1111 1111 1111 1111 1111 1111 1111 1010  5取非</span><br><span class="line">=	1000 0000 0000 0000 0000 0000 0000 0110  转换为补码，等于 -6</span><br></pre></td></tr></table></figure></p>
+<p>这里很奇怪的一点，为什么取非之后还要转换为补码，因为是有符号的，而负数在计算器中是以补码的形式存在，对任一数值 x 进行按位非操作的结果为 -(x + 1)。</p>
+<h3 id="异或操作"><a href="#异或操作" class="headerlink" title="异或操作"></a>异或操作</h3><p>在 Java 中操作符为 <code>^</code>，比较位不同时为1，否则为0，如 <code>2 ^ 3 = 1</code> :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">	0000 0000 0000 0000 0000 0000 0000 0010  2的原码</span><br><span class="line">^	0000 0000 0000 0000 0000 0000 0000 0011  3的原码</span><br><span class="line">= 	0000 0000 0000 0000 0000 0000 0000 0001  1的原码</span><br></pre></td></tr></table></figure></p>
+<p>将任一数值 x 与 0 进行异或操作，其结果为 x。将任一数值 x 与 -1 进行异或操作，其结果为 ~x。</p>
+<h3 id="左移"><a href="#左移" class="headerlink" title="左移"></a>左移</h3><p>在 Java 中操作符为 <code>&lt;&lt;</code>，向左移动指定位数，移出的位数抛弃，右侧补0。</p>
+<h3 id="右移"><a href="#右移" class="headerlink" title="右移"></a>右移</h3><p>在 Java 中操作符为 <code>&gt;&gt;</code>，向右移动指定位数，移出的位数抛弃，左侧补最高位，即最高位为1则补1，为0则补0，即符号位不会变，而 <code>&gt;&gt;&gt;</code> 则是指无符号右移，左侧总是补0。</p>
+<h3 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h3><p>(+ - * )  &gt; (&gt;&gt; &lt;&lt; &gt;&gt;&gt;) &gt; &amp; | ^</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p><a href="http://www.ruanyifeng.com/blog/2009/08/twos_complement.html" target="_blank" rel="noopener">关于2的补码</a><br><a href="https://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html" target="_blank" rel="noopener">原码, 反码, 补码 详解</a><br><br><a href="http://www.matrix67.com/blog/archives/263" target="_blank" rel="noopener">位运算简介及实用技巧（一）：基础篇</a><br><br><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators#%E6%8C%89%E4%BD%8D%E9%80%BB%E8%BE%91%E6%93%8D%E4%BD%9C%E7%AC%A6" target="_blank" rel="noopener">按位操作符
+</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/进制/" rel="tag"># 进制</a>
+          
+            <a href="/tags/移位/" rel="tag"># 移位</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/01/写在2019的第一天/" rel="next" title="写在2019的第一天">
+                <i class="fa fa-chevron-left"></i> 写在2019的第一天
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wavever</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wavever" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wavever.ht@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/4736526/wavever" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#进制"><span class="nav-number">1.</span> <span class="nav-text">进制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进制转换"><span class="nav-number">1.1.</span> <span class="nav-text">进制转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原码"><span class="nav-number">1.2.</span> <span class="nav-text">原码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反码"><span class="nav-number">1.3.</span> <span class="nav-text">反码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#补码"><span class="nav-number">1.4.</span> <span class="nav-text">补码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#位运算"><span class="nav-number">2.</span> <span class="nav-text">位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#与操作"><span class="nav-number">2.1.</span> <span class="nav-text">与操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#或操作"><span class="nav-number">2.2.</span> <span class="nav-text">或操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非操作"><span class="nav-number">2.3.</span> <span class="nav-text">非操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异或操作"><span class="nav-number">2.4.</span> <span class="nav-text">异或操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#左移"><span class="nav-number">2.5.</span> <span class="nav-text">左移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#右移"><span class="nav-number">2.6.</span> <span class="nav-text">右移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优先级"><span class="nav-number">2.7.</span> <span class="nav-text">优先级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考："><span class="nav-number">3.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wavever</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

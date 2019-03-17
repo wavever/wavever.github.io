@@ -88,7 +88,7 @@
 <meta property="og:description" content="Activity 作为四大组件之一，也是平常接触最多的，以前对于 Activity 的使用其实也有点人云亦云，只知道要在 onCreate() 里去做一些初始化工作，不要在 onResume() 或是 onPause() 中做一些耗时操作，总之就是，别人怎么做，我也怎么做，没有想过为什么要这么做，在通读了 Android 开发艺术探索第一章之后，对于 Activity 的了解深入了一点，也解答了自">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://developer.android.com/images/activity_lifecycle.png?hl=zh-cn">
-<meta property="og:updated_time" content="2018-11-28T16:54:50.423Z">
+<meta property="og:updated_time" content="2019-03-04T10:57:45.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="再看艺术开发探索之Activity的生命周期和启动模式">
 <meta name="twitter:description" content="Activity 作为四大组件之一，也是平常接触最多的，以前对于 Activity 的使用其实也有点人云亦云，只知道要在 onCreate() 里去做一些初始化工作，不要在 onResume() 或是 onPause() 中做一些耗时操作，总之就是，别人怎么做，我也怎么做，没有想过为什么要这么做，在通读了 Android 开发艺术探索第一章之后，对于 Activity 的了解深入了一点，也解答了自">
@@ -378,7 +378,7 @@
 <h3 id="SingleTask"><a href="#SingleTask" class="headerlink" title="SingleTask"></a>SingleTask</h3><p>栈内复用模式，只要存在于栈中，则不会被重新创建，且也会回调 <code>onNewIntent()</code> ，默认具有 clearTop 效果，会导致所有位于要启动 Activity 上面的 Activity 都出栈。</p>
 <h4 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h4><ul>
 <li>S1 栈中为 ABC，此时启动 属于任务栈 S2 的 D，如果 S2 不存在，则会创建任务栈 S2，然后将 D 加入 S2</li>
-<li>S1 栈中为 ABCD，此时启动 属于任务栈 S2 的 B，则 B 不会重新创建，会将 CD 出栈，只剩下 AB</li>
+<li>S2 栈中为 ABCD，此时启动 属于任务栈 S2 的 B，则 B 不会重新创建，会将 CD 出栈，只剩下 AB</li>
 </ul>
 <h4 id="任务栈"><a href="#任务栈" class="headerlink" title="任务栈"></a>任务栈</h4><p>任务栈分为前台任务栈和后台任务栈，后台任务栈中的 Activity 处于暂停状态，用户可以通过切换将后台任务栈再次调到前台，当后台任务栈中的 Activity 被启动时，整个后台任务栈都会被切换到前台。<br>可以通过命令 <code>adb shell dumpsys activity</code> 来查看当前的所有 Activity 信息，通过搜索 <strong>Running</strong> 关键字来查询当前运行的 Activity 以及它的任务栈。<br>默认情况下所有 Activity 的任务栈的名字都是应用的包名，可以通过指定 <code>TaskAffinity</code> 属性来指定任务栈，任务栈在 SingleTask 模式下非常重要，例如在一个 Launcher 应用中，Launcher Activity有独立任务栈，A、B 启动模式都为SingleTask 且未指定任务栈，先启动 A，然后点 Home 键，接着启动 B，此时点击 Back 键，会发现回到了 A，这就是因为都没有指定任务栈，所以加入到了默认的栈中，因此在使用这种模式时，特定情况下，需要去指定任务栈。</p>
 <h3 id="SingleInstance"><a href="#SingleInstance" class="headerlink" title="SingleInstance"></a>SingleInstance</h3><p>单实例模式，具有该模式的 Activity 单独处于一个任务栈中，可以理解为不需要手动设置任务栈的 singleTask 模式。</p>
@@ -512,7 +512,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -523,7 +523,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -534,7 +534,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
