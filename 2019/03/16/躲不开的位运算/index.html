@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="wavever的博客">
 <meta property="og:description" content="最近看源码的时候，遇到了各种位运算，又想起之前做的一个面试题也是求解一个包含各种位运算的表达式，这方面的知识点虽说平时可能用到的地方不会太多，但了解完之后发现它可以很方便的去实现一些逻辑，如奇数偶数的判断等。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-17T15:09:13.263Z">
+<meta property="og:updated_time" content="2019-03-18T14:38:32.216Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="聊一聊位运算">
 <meta name="twitter:description" content="最近看源码的时候，遇到了各种位运算，又想起之前做的一个面试题也是求解一个包含各种位运算的表达式，这方面的知识点虽说平时可能用到的地方不会太多，但了解完之后发现它可以很方便的去实现一些逻辑，如奇数偶数的判断等。">
@@ -474,7 +474,7 @@
 <h2 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h2><p>搞清楚了进制之间的转换，那么位运算其实也就没有什么难的了，位运算只要有一下几种，使用 Java 代码来进行展示。</p>
 <h3 id="与操作"><a href="#与操作" class="headerlink" title="与操作"></a>与操作</h3><p>在 Java 中操作符为 <code>&amp;</code>，1 与 1 相与为 1，否则为0，如：<code>1101</code> 与 <code>0101</code> 相与结果为 <code>0101</code>。</p>
 <h3 id="或操作"><a href="#或操作" class="headerlink" title="或操作"></a>或操作</h3><p>在 Java 中操作符为 <code>|</code>，0 与 0 相与为 0，否则为1，如：<code>1101</code> 与 <code>0101</code> 相与结果为 <code>0101</code>。</p>
-<h3 id="非操作"><a href="#非操作" class="headerlink" title="非操作"></a>非操作</h3><p>在 Java 中操作符为 <code>～</code>，1 取反为 0，0 取反为 1，如 <code>～5 = -6</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~	0000 0000 0000 0000 0000 0000 0000 0101  5的原码</span><br><span class="line">	1111 1111 1111 1111 1111 1111 1111 1010  5取非</span><br><span class="line">=	1000 0000 0000 0000 0000 0000 0000 0110  转换为补码，等于 -6</span><br></pre></td></tr></table></figure></p>
+<h3 id="非操作"><a href="#非操作" class="headerlink" title="非操作"></a>非操作</h3><p>在 Java 中操作符为 <code>～</code>，1 取反为 0，0 取反为 1，如 <code>～5 = -6</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~	0000 0000 0000 0000 0000 0000 0000 0101  5的原码</span><br><span class="line">	1111 1111 1111 1111 1111 1111 1111 1010  5取非的原码</span><br><span class="line">	</span><br><span class="line">=	1000 0000 0000 0000 0000 0000 0000 0110  转换为补码，等于 -6</span><br></pre></td></tr></table></figure></p>
 <p>这里很奇怪的一点，为什么取非之后还要转换为补码，因为是有符号的，而负数在计算器中是以补码的形式存在，对任一数值 x 进行按位非操作的结果为 -(x + 1)。</p>
 <h3 id="异或操作"><a href="#异或操作" class="headerlink" title="异或操作"></a>异或操作</h3><p>在 Java 中操作符为 <code>^</code>，比较位不同时为1，否则为0，如 <code>2 ^ 3 = 1</code> :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">	0000 0000 0000 0000 0000 0000 0000 0010  2的原码</span><br><span class="line">^	0000 0000 0000 0000 0000 0000 0000 0011  3的原码</span><br><span class="line">= 	0000 0000 0000 0000 0000 0000 0000 0001  1的原码</span><br></pre></td></tr></table></figure></p>
 <p>将任一数值 x 与 0 进行异或操作，其结果为 x。将任一数值 x 与 -1 进行异或操作，其结果为 ~x。</p>
@@ -515,8 +515,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/01/写在2019的第一天/" rel="next" title="写在2019的第一天">
-                <i class="fa fa-chevron-left"></i> 写在2019的第一天
+              <a href="/2019/03/04/再看艺术开发探索之View的事件体系/" rel="next" title="再看艺术开发探索之View的事件体系">
+                <i class="fa fa-chevron-left"></i> 再看艺术开发探索之View的事件体系
               </a>
             
           </div>
@@ -524,6 +524,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/20/细谈Handler/" rel="prev" title="细谈Handler">
+                细谈Handler <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -600,7 +604,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -611,7 +615,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -622,7 +626,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
