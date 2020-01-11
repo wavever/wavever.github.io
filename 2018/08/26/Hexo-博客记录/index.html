@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="最近换了个 mac😄，因为之前没有用过 macOS 系统，所以包括搭建开发环境和安装一些软件都得去搜索如何安装，本篇博客主要记录一下如何在换机器或是重装系统时转移博客内容，防止下次需要用时还要到处搜索。">
+<meta name="description" content="本文是日常使用 Hexo 的一些记录。">
 <meta name="keywords" content="Hexo,Blog">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo 博客记录">
 <meta property="og:url" content="wavever.github.io/2018/08/26/Hexo-博客记录/index.html">
 <meta property="og:site_name" content="wavever的博客">
-<meta property="og:description" content="最近换了个 mac😄，因为之前没有用过 macOS 系统，所以包括搭建开发环境和安装一些软件都得去搜索如何安装，本篇博客主要记录一下如何在换机器或是重装系统时转移博客内容，防止下次需要用时还要到处搜索。">
+<meta property="og:description" content="本文是日常使用 Hexo 的一些记录。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-26T17:11:25.127Z">
+<meta property="og:updated_time" content="2020-01-11T11:53:59.125Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo 博客记录">
-<meta name="twitter:description" content="最近换了个 mac😄，因为之前没有用过 macOS 系统，所以包括搭建开发环境和安装一些软件都得去搜索如何安装，本篇博客主要记录一下如何在换机器或是重装系统时转移博客内容，防止下次需要用时还要到处搜索。">
+<meta name="twitter:description" content="本文是日常使用 Hexo 的一些记录。">
 
 
 
@@ -350,10 +350,14 @@
       
 
       
-        <p>最近换了个 mac😄，因为之前没有用过 macOS 系统，所以包括搭建开发环境和安装一些软件都得去搜索如何安装，本篇博客主要记录一下如何在换机器或是重装系统时转移博客内容，防止下次需要用时还要到处搜索。<br><a id="more"></a></p>
-<h3 id="安装-Nodejs"><a href="#安装-Nodejs" class="headerlink" title="安装 Nodejs"></a>安装 Nodejs</h3><p>博客是使用 <a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">Hexo</a> 搭建，因此首先需要去按转 <a href="http://nodejs.cn/download/" target="_blank" rel="noopener">NodeJs</a> ，在 macOS 上，可以选择使用官网下载压缩包或是使用 homebrew 安装：<br><br><code>homebrew install node</code></p>
-<h3 id="安装-Hexo"><a href="#安装-Hexo" class="headerlink" title="安装 Hexo"></a>安装 Hexo</h3><p><code>npm install hexo-cli -g</code><br>进入到想生成博客的文件夹或是填入路径：<br><br><code>hexo init</code><br><br>或是<code>hexo init path</code><br><br>生成静态文件：<code>hexo generate</code></p>
-<h3 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h3><p>安装 <a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">next</a> 主题<br><br><code>$ git clone --branch v5.1.2 https://github.com/iissnan/hexo-theme-next themes/next</code><br>主题可以通过更改配置文件来修改配置，如果之前已经使用过该主题，直接可以将之前的配置文件拷贝过来进行覆盖，不过如果之前主题版本较老，还是需要和新版本主题配置文件对比一下的。</p>
+        <p>本文是日常使用 Hexo 的一些记录。<br><a id="more"></a></p>
+<p><a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">Hexo</a> 是博客框架，</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">homebrew install node</span><br></pre></td></tr></table></figure>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><h3 id="安装-Nodejs"><a href="#安装-Nodejs" class="headerlink" title="安装 Nodejs"></a>安装 Nodejs</h3><p>博客是使用 <a href="https://github.com/hexojs/hexo" target="_blank" rel="noopener">Hexo</a> 搭建，因此首先需要去安装 <a href="http://nodejs.cn/download/" target="_blank" rel="noopener">NodeJs</a> ，在 macOS 上，可以选择使用官网下载压缩包或是使用 homebrew 安装：<br><br><code>homebrew install node</code></p>
+<h3 id="安装-Hexo"><a href="#安装-Hexo" class="headerlink" title="安装 Hexo"></a>安装 Hexo</h3><p><code>npm install hexo-cli -g</code><br>进入到想生成博客的文件夹或是填入路径：<br><br><code>hexo init</code><br>或是<code>hexo init path</code><br><br>生成静态文件：<code>hexo generate</code></p>
+<h3 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h3><p>安装 <a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">next</a> 主题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --branch v5.1.2 https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>主题可以通过更改配置文件来修改配置，如果之前已经使用过该主题，直接可以将之前的配置文件拷贝过来进行覆盖，不过如果之前主题版本较老，还是需要和新版本主题配置文件对比一下的。</p>
 <h3 id="转移博客内容"><a href="#转移博客内容" class="headerlink" title="转移博客内容"></a>转移博客内容</h3><p>复制 _post 文件夹至新地址进行覆盖，如果有关于或是分类等页面，可以生成对应 <code>hexo new page &quot;about&quot;</code> 页面后复制之前的 index.md 覆盖。</p>
 <h3 id="生成、部署博客"><a href="#生成、部署博客" class="headerlink" title="生成、部署博客"></a>生成、部署博客</h3><p>使用命令：<br><code>hexo g</code> 以及 <code>hexo d</code><br><br>或是直接使用：<br><code>hexo d -g</code><br>此时，如果出现错误：error deployer not found:git ，需要去安装 git 部署工具：<br><code>npm install hexo-deployer-git --save</code><br><br><br>大功告成～可以在新机器上愉快的玩耍了😄</p>
 
@@ -499,7 +503,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -554,7 +558,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Nodejs"><span class="nav-number">1.</span> <span class="nav-text">安装 Nodejs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Hexo"><span class="nav-number">2.</span> <span class="nav-text">安装 Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装主题"><span class="nav-number">3.</span> <span class="nav-text">安装主题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#转移博客内容"><span class="nav-number">4.</span> <span class="nav-text">转移博客内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成、部署博客"><span class="nav-number">5.</span> <span class="nav-text">生成、部署博客</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">2.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Nodejs"><span class="nav-number">3.</span> <span class="nav-text">安装 Nodejs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Hexo"><span class="nav-number">4.</span> <span class="nav-text">安装 Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装主题"><span class="nav-number">5.</span> <span class="nav-text">安装主题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#转移博客内容"><span class="nav-number">6.</span> <span class="nav-text">转移博客内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成、部署博客"><span class="nav-number">7.</span> <span class="nav-text">生成、部署博客</span></a></li></ol></div>
             
 
           </div>
