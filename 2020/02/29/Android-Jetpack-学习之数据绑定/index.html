@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Jetpack,ViewBinding," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Jetpack 是谷歌推出一套库、工具和指南，可以帮助开发者更轻松地编写优质应用，摆脱编写样板代码的工作并简化复杂任务，将精力集中放在所需的代码上。 简而言之，可以理解为是官方提供的一套 Android 开发脚手架，在这个新技术层出不群，质量也无法保证的时代，跟着官方的建议走，也未尝不是一件坏事。视图绑定属于 Jetpack 中的架构组件，主要就是用来快速方便的引用视图，精准定位，彻底帮你省去 f">
+<meta name="keywords" content="Jetpack,ViewBinding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ViewBinding--压死 findViewById 的最后一根稻草">
+<meta property="og:url" content="wavever.github.io/2020/02/29/Android-Jetpack-学习之数据绑定/index.html">
+<meta property="og:site_name" content="wavever的博客">
+<meta property="og:description" content="Jetpack 是谷歌推出一套库、工具和指南，可以帮助开发者更轻松地编写优质应用，摆脱编写样板代码的工作并简化复杂任务，将精力集中放在所需的代码上。 简而言之，可以理解为是官方提供的一套 Android 开发脚手架，在这个新技术层出不群，质量也无法保证的时代，跟着官方的建议走，也未尝不是一件坏事。视图绑定属于 Jetpack 中的架构组件，主要就是用来快速方便的引用视图，精准定位，彻底帮你省去 f">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-02-29T06:39:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ViewBinding--压死 findViewById 的最后一根稻草">
+<meta name="twitter:description" content="Jetpack 是谷歌推出一套库、工具和指南，可以帮助开发者更轻松地编写优质应用，摆脱编写样板代码的工作并简化复杂任务，将精力集中放在所需的代码上。 简而言之，可以理解为是官方提供的一套 Android 开发脚手架，在这个新技术层出不群，质量也无法保证的时代，跟着官方的建议走，也未尝不是一件坏事。视图绑定属于 Jetpack 中的架构组件，主要就是用来快速方便的引用视图，精准定位，彻底帮你省去 f">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="wavever.github.io/2020/02/29/Android-Jetpack-学习之数据绑定/"/>
+
+
+
+
+
+  <title>ViewBinding--压死 findViewById 的最后一根稻草 | wavever的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+
+  <div class="container  page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wavever的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">从容不迫，淡定始终。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="wavever.github.io/2020/02/29/Android-Jetpack-学习之数据绑定/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wavever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wavever的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ViewBinding--压死 findViewById 的最后一根稻草</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-29T14:39:42+08:00">
+                2020-02-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://developer.android.com/jetpack" target="_blank" rel="noopener">Jetpack</a> 是谷歌推出<strong>一套库、工具和指南，可以帮助开发者更轻松地编写优质应用，摆脱编写样板代码的工作并简化复杂任务，将精力集中放在所需的代码上</strong>。</p>
+<p>简而言之，可以理解为是官方提供的一套 Android 开发脚手架，在这个新技术层出不群，质量也无法保证的时代，跟着官方的建议走，也未尝不是一件坏事。<a href="https://developer.android.com/topic/libraries/view-binding" target="_blank" rel="noopener">视图绑定</a>属于 Jetpack 中的架构组件，主要就是用来快速方便的引用视图，精准定位，彻底帮你省去 <code>findViewById</code>。</p>
+<a id="more"></a>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>ViewBinding 是在 Android Gradle 插件 3.6.0 版本中引入，因此要确保 Android Studio 和 Gradle 插件版本号大于等于 3.6.0。</p>
+<p>接着，需要在模块的 <code>build.gradle</code> 文件下启用：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">        ...</span><br><span class="line">        viewBinding &#123;</span><br><span class="line">            enabled = <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><a href="https://developer.android.com/studio/preview/features/#agp-4-0-0" target="_blank" rel="noopener">Android Gradle 插件 4.0.0-alpha05</a> 引入了<code>buildFeatures</code> 块来控制构建功能，如视图绑定、数据绑定和 Jetpack Compose，需要如下这样配置：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">        <span class="comment">// The default value for each feature is shown below. You can change the value to</span></span><br><span class="line">        <span class="comment">// override the default behavior.</span></span><br><span class="line">        buildFeatures &#123;</span><br><span class="line">            <span class="comment">// Determines whether to support View Binding.</span></span><br><span class="line">            <span class="comment">// Note that the viewBinding.enabled property is now deprecated.</span></span><br><span class="line">            viewBinding = <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>此时，当创建一个 XML 布局文件后，就会以 XML 文件名称按照驼峰大小形式来自动生成一个绑定类，例如：<code>activity_main.xml</code>对应的是 <code>ActivityMainBinding.java</code>，<code>activityuser.xml</code> 对应 <code>Activityuser.java</code>。</p>
+<p>通过调用对应 Binding 类的 <code>inflate()</code> 方法，并传入参数 LayoutInflater 来获取一个实例。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">lateinit</span> <span class="keyword">var</span> viewBinding : ActivityMainBinding</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">      <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">      viewBinding = ActivityMainBinding.inflate(layoutInflater)</span><br><span class="line">      setContentView(viewBinding.root)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过 <code>getRoot()</code> 来获取布局的根View，这里 ViewBinding 还提供了接受三个参数的 inflate() 方法，与 LayoutInflater 的接口一致。在获取到实例后，就可以通过 binding.id 来获取到对应 ID 的 View 实例了。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">viewBinding.my_text.setText(<span class="string">"hello, world."</span>)</span><br></pre></td></tr></table></figure>
+<p>默认情况下，会为每个布局 XML 文件都生成绑定类，可以通过将 <code>tools:viewBindingIgnore=&quot;true&quot;</code> 属性添加到布局文件的根视图来忽略生成。</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>既然 ViewBinding 的作用是用来减少写 <code>findViewById</code> 样板代码，那它就免不了 <a href="https://github.com/JakeWharton/butterknife" target="_blank" rel="noopener">ButterKnife</a> 做一下对比了，官方给出的优点是：</p>
+<ul>
+<li><strong>Null 安全</strong>：由于视图绑定会创建对视图的直接引用，因此不存在因视图 ID 无效而引发 Null 指针异常的风险。此外，如果视图仅出现在布局的某些配置中，则绑定类中包含其引用的字段会使用 <code>@Nullable</code> 标记。</li>
+<li><strong>类型安全</strong>：每个绑定类中的字段均具有与它们在 XML 文件中引用的视图相匹配的类型。这意味着不存在发生类转换异常的风险。</li>
+</ul>
+<p>如下面的代码所示，在声明成员变量时，会根据 XML 文件中的 View 类型来创建，因此不会存在类型转换的问题，并且会添加注解 <code>@NonNull</code>。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@NonNull</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ConstraintLayout rootView;</span><br><span class="line"></span><br><span class="line"><span class="meta">@NonNull</span></span><br><span class="line"><span class="keyword">public</span> static ActivityTestBinding inflate(<span class="meta">@NonNull</span> LayoutInflater inflater, <span class="meta">@Nullable</span> ViewGroup parent, boolean attachToParent) &#123;</span><br><span class="line">  View root = inflater.inflate(R.layout.activity_test, parent, <span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">if</span> (attachToParent) &#123;</span><br><span class="line">    parent.addView(root);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> bind(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@NonNull</span></span><br><span class="line"><span class="keyword">public</span> static ActivityTestBinding bind(<span class="meta">@NonNull</span> View rootView) &#123;</span><br><span class="line">  <span class="comment">// The body of this method is generated in a way you would not otherwise write.</span></span><br><span class="line">  <span class="comment">// This is done to optimize the compiled bytecode for size and performance.</span></span><br><span class="line">  String missingId;</span><br><span class="line">  missingId: &#123;</span><br><span class="line">    ImageView activityTestImg = rootView.findViewById(R.id.activity_test_img);</span><br><span class="line">    <span class="keyword">if</span> (activityTestImg == <span class="literal">null</span>) &#123;</span><br><span class="line">      missingId = <span class="string">"activityTestImg"</span>;</span><br><span class="line">      <span class="keyword">break</span> missingId;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> new ActivityTestBinding((ConstraintLayout) rootView, activityTestImg,</span><br><span class="line">        activityTestInclude);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">throw</span> new NullPointerException(<span class="string">"Missing required view with ID: "</span>.concat(missingId));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 ViewBinding 的 inflate() 中，会去调用另一个静态方法 bind()，在这里，会通过 findViewById 来获取 View，如果为空，则会跑出异常，保证了在编译期间报错，而不是在运行期间。</p>
+<p>更为关键的是，<strong>不用依赖任何库</strong>，这就大大减少了应用引入的成本。目前 <code>ButterKnife</code> 的 Github 主页上已经有了备注，建议考虑下是否替换为 ViewBinding。</p>
+<blockquote>
+<p><strong>Attention</strong>: Development on this tool is winding down. Please consider switching to <a href="https://developer.android.com/topic/libraries/view-binding" target="_blank" rel="noopener">view binding</a> in the coming months.</p>
+</blockquote>
+<p>使用时可以发现，每次编辑完 XML 文件，例如添加一个带 ID 的 View 后，在 Java 文件中就可以通过对应的绑定类调用到，这是由于 ViewBinding 的代码生成插件会优先在内存中创建一个该 XML 的 Binding 对象，并对其进行更新，而并非是在 Build 之后才去创建。</p>
+<h3 id="与-DataBinding-的区别"><a href="#与-DataBinding-的区别" class="headerlink" title="与 DataBinding 的区别"></a>与 DataBinding 的区别</h3><p>使用 DataBinding 和使用 ViewBinding 所生成的绑定类名称是一样的，通过绑定类中的注释来看，并非是使用同一编译器生成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Generated by data binding compiler. Do not edit!</span><br><span class="line">// Generated by view binder compiler. Do not edit!</span><br></pre></td></tr></table></figure>
+<p>ViewBinding 的使用场景很单一，就是用来简化样板代码，其绑定类是实现了<code>androidx.viewbinding.ViewBinding</code> 接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** A type which binds the views in a layout XML to fields. */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ViewBinding</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns the outermost &#123;<span class="doctag">@link</span> View&#125; in the associated layout file. If this binding is for a</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@code</span> &lt;merge&gt;&#125; layout, this will return the first view inside of the merge tag.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="function">View <span class="title">getRoot</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而 DataBinding 的绑定类则是继承自 <code>androidx.databinding.ViewDataBinding</code>，并且 <code>ViewDataBinding</code> 是实现了 <code>ViewBinding</code> 接口，也就是说通过 DataBinding 也可以实现绑定视图，但需要注意的是，DataBinding 仅处理使用 <code>layout</code> 代码创建的数据绑定布局，即如果在布局中有 include 标签，并设置了 ID，那么如果包含的布局是没有在 <code>layout</code> 中，那么是调用不到 include 布局中的 View的。举个例子：</p>
+<p>如果只打开了 ViewBinding，此时有两个布局，<code>test_main.xml</code> </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--test_main.xml--&gt;</span></span><br><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">include</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">"@+id/test_main_include"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">layout</span>=<span class="string">"@layout/test_include"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>和  <code>test_include.xml</code> </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">"@+id/test_include_image"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>那么此时是可以通过 <code>binding.test_main_include.test_include_image</code> 来获取到 <code>test_main.xml</code> 布局所包含的布局中的元素的，因为通过 <code>binding.test_main_include</code> 获取到的是 <code>TestIncludeBinding</code>，但如果此时只是使用 DataBinding，并且只有 <code>test_main.xml</code> 布局是在 <code>layout</code>  中，则此时调用 <code>binding.test_main_include</code> 获取到的只是 <code>test_include.xml</code> 布局的根 View ConstraintLayout 的实例，而无法获取到它的子 View，此时必须将 <code>test_include.xml</code> 也放在 <code>layout</code> 中，才可以正常获取到 <code>test_include.xml</code> 中的其他 View，或者也可以同时打开 ViewBinding 和 DataBinding 来实现。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://developer.android.com/topic/libraries/view-binding" target="_blank" rel="noopener">Android 开发者文档指南：视图绑定</a></p>
+<p><a href="https://medium.com/androiddevelopers/use-view-binding-to-replace-findviewbyid-c83942471fc" target="_blank" rel="noopener">Use view binding to replace findViewById</a></p>
+<p><a href="">Android 开发者文档指南：数据绑定</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Jetpack/" rel="tag"># Jetpack</a>
+          
+            <a href="/tags/ViewBinding/" rel="tag"># ViewBinding</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/11/hello-oh-my-zsh/" rel="next" title="hello, oh my zsh~">
+                <i class="fa fa-chevron-left"></i> hello, oh my zsh~
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wavever</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wavever" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wavever.ht@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/4736526/wavever" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与-DataBinding-的区别"><span class="nav-number">3.</span> <span class="nav-text">与 DataBinding 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wavever</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
