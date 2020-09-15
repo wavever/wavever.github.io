@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Object," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Object 类是所有类的基类，完整路径为 java.lang.Object ，包含以下几种方法：">
+<meta name="keywords" content="Java,Object">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基础回顾之 Object 类">
+<meta property="og:url" content="wavever.github.io/2020/08/23/Object-类方法简述/index.html">
+<meta property="og:site_name" content="wavever的博客">
+<meta property="og:description" content="Object 类是所有类的基类，完整路径为 java.lang.Object ，包含以下几种方法：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s1.ax1x.com/2020/08/30/dboiwQ.png">
+<meta property="og:updated_time" content="2020-08-22T16:00:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基础回顾之 Object 类">
+<meta name="twitter:description" content="Object 类是所有类的基类，完整路径为 java.lang.Object ，包含以下几种方法：">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/08/30/dboiwQ.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="wavever.github.io/2020/08/23/Object-类方法简述/"/>
+
+
+
+
+
+  <title>基础回顾之 Object 类 | wavever的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+
+  <div class="container  page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wavever的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">从容不迫，淡定始终。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="wavever.github.io/2020/08/23/Object-类方法简述/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wavever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wavever的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基础回顾之 Object 类</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-23T00:00:03+08:00">
+                2020-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/基础回顾/" itemprop="url" rel="index">
+                    <span itemprop="name">基础回顾</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Object 类是所有类的基类，完整路径为 java.lang.Object ，包含以下几种方法：</p>
+<p><img src="https://s1.ax1x.com/2020/08/30/dboiwQ.png" alt=""></p>
+<a id="more"></a>
+<h4 id="registerNatives"><a href="#registerNatives" class="headerlink" title="registerNatives()"></a>registerNatives()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">registerNatives</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    registerNatives();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Native 方法，在 JNI 中又调用了 RegisterNatives 来动态注册 Java 方法和 JNI 函数的对应关系，代码位于 jdk 的 native 目录 <a href="https://gitee.com/wavever/jdk8u_jdk/blob/master/src/share/native/java/lang/Object.c" target="_blank" rel="noopener">src/share/native/java/lang/Object.c</a> ：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> JNINativeMethod methods[] = &#123;</span><br><span class="line">    &#123;<span class="string">"hashCode"</span>,    <span class="string">"()I"</span>,                    (<span class="keyword">void</span> *)&amp;JVM_IHashCode&#125;,</span><br><span class="line">    &#123;<span class="string">"wait"</span>,        <span class="string">"(J)V"</span>,                   (<span class="keyword">void</span> *)&amp;JVM_MonitorWait&#125;,</span><br><span class="line">    &#123;<span class="string">"notify"</span>,      <span class="string">"()V"</span>,                    (<span class="keyword">void</span> *)&amp;JVM_MonitorNotify&#125;,</span><br><span class="line">    &#123;<span class="string">"notifyAll"</span>,   <span class="string">"()V"</span>,                    (<span class="keyword">void</span> *)&amp;JVM_MonitorNotifyAll&#125;,</span><br><span class="line">    &#123;<span class="string">"clone"</span>,       <span class="string">"()Ljava/lang/Object;"</span>,   (<span class="keyword">void</span> *)&amp;JVM_Clone&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">JNIEXPORT <span class="keyword">void</span> JNICALL</span><br><span class="line">Java_java_lang_Object_registerNatives(JNIEnv *env, jclass cls)</span><br><span class="line">&#123;</span><br><span class="line">    (*env)-&gt;RegisterNatives(env, cls,</span><br><span class="line">                            methods, <span class="keyword">sizeof</span>(methods)/<span class="keyword">sizeof</span>(methods[<span class="number">0</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">JNIEXPORT jclass JNICALL</span><br><span class="line">Java_java_lang_Object_getClass(JNIEnv *env, jobject <span class="keyword">this</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        JNU_ThrowNullPointerException(env, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (*env)-&gt;GetObjectClass(env, <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="getClass"><a href="#getClass" class="headerlink" title="getClass()"></a>getClass()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> Class&lt;?&gt; getClass();</span><br></pre></td></tr></table></figure>
+<p>也是一个本地方法，实现实在 Native 层，但并没有采用动态注册的方式，而是采用静态注册的方式，在 Object.c 中对应的 Native 方法为：<strong>Java_java_lang_Object_getClass()</strong></p>
+<p>返回此对象的运行时类，返回的Class对象是被表示的类的静态同步方法锁定的对象。（应该就是表示这个方法的本地实现应该是用了类锁吧。。）</p>
+<h4 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode()"></a>hashCode()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<p>Native 方法，在 JVM 中实现。</p>
+<p>返回对象的 Hash 值，该方法是为了使哈希表（例如HashMap提供的哈希表）受益。Hash code 一般又以下约定：</p>
+<ul>
+<li>在Java应用程序<strong>一次执行期间</strong>，hashcode() 必须返回相同的整数值，不同的执行期间则不做要求</li>
+<li>如果调用 equals() 判断两个对象相等，则这两个对象的 hashCode 方法返回值<strong>必须相同</strong></li>
+<li>如果调用 equals() 判断两个对象不相等，则这两个对象的 hashCode 方法返回值<strong>可以相同也可以不同，这个并不是必须的，但不同对象还是建议返回不同的hashcode，这样可以降低hash碰撞的概率</strong></li>
+</ul>
+<p>一般情况下，Obecjt 中的 hashCode() 可以保证不同的对象返回不同的值。</p>
+<h4 id="equals"><a href="#equals" class="headerlink" title="equals()"></a>equals()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">this</span> == obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表示两个对象是否相等，具有以下特性：</p>
+<ul>
+<li><strong>自反性</strong>：<code>x.equals(x)</code> 必须返回 ture</li>
+<li><strong>对称性</strong>：<code>x.equals(y)</code> 和 <code>y.equals(x)</code> 的值必须相同</li>
+<li><strong>传递性</strong>：如果 <code>x.equals(y)</code>  为 true，<code>y.equals(z)</code> 为 true，则 <code>x.equals(z)</code> 也为 true</li>
+<li><strong>一致性</strong>：对于任何非空对象， <code>x.equals(null)</code> 均为 false</li>
+</ul>
+<p>equals 方法默认实现是直接通过 == 来判断两个对象是否指向同一个引用，equals() 更多的是判断对象的内容是否相等，而 == 则用来判断是否是同一个对象。</p>
+<p><strong>如果需要重写该方法，务必同时也要重写 hashCode方法，以保证 hashCode方法的常规约定：相等的对象必须具有相等的 hash 值。</strong></p>
+<h4 id="clone"><a href="#clone" class="headerlink" title="clone()"></a>clone()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Object</span> </span>&#123;</span><br><span class="line">		<span class="function"><span class="keyword">protected</span> <span class="keyword">native</span> Object <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>native 方法，其遵守如下约定：</p>
+<ul>
+<li><code>x.clone() != x</code> 为 true，即二者为不同的对象</li>
+<li><code>x.clone().getClass() == x.getClass()</code> 为 true，即二者的类是相同的</li>
+<li><code>x.clone().equals(x)</code> 为 true，因为 equals() 是用来比较两个对象的值是否相同，那么理应克隆后的对象与愿对象的值应该是相同的</li>
+</ul>
+<p>实现克隆需要实现 Cloneable 接口并重写 Object 中的 clone() 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//java.lang.Cloneable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Cloneable</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>Cloneable 是一个空接口，表明可以调用类的 clone() 方法来进行克隆，如果对一个没有实现接口的对象调用 clone() 将会抛出 CloneNotSupportedException 异常。如果实现了该接口，按照惯例，必须重写 clone() 方法，并将可见效改为 public，其在 Object 中默认为 protected，这也是为什么如果一个类不重写则调用不到，因为是在 Object 类所处的包下。</p>
+<h4 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString()"></a>toString()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> getClass().getName() + <span class="string">"@"</span> + Integer.toHexString(hashCode());</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//例如 HelloWord.java 返回 HelloWord@15db9742</span></span><br></pre></td></tr></table></figure>
+<p>返回对象的信息，当将对象直接和字符串相加时，隐式调用该对象的 toString 方法。</p>
+<h4 id="notify-amp-notifyAll"><a href="#notify-amp-notifyAll" class="headerlink" title="notify() &amp; notifyAll()"></a>notify() &amp; notifyAll()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">notify</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">notifyAll</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这两个方法都是用于唤醒其他等待该对象 monitor 锁的线程（通过调用了 wait 方法）</p>
+<ul>
+<li>notify 方法会任意选择一个线程唤醒，这个选择是<strong>随机</strong>并且由具体的虚拟机自行实现。</li>
+<li>notifyAll 则会唤醒所有等待锁的线程</li>
+</ul>
+<p>被唤醒的线程不会立即执行，而是需要等到当前持有锁的线程释放后，如果此时存在其他线程也获取锁，则需要进行竞争。</p>
+<p>该方法只能在已经获取到对象锁的线程中调用，否则会抛出 IllegalMonitorStateException 异常。</p>
+<h4 id="wait"><a href="#wait" class="headerlink" title="wait()"></a>wait()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">wait</span><span class="params">(<span class="keyword">long</span> timeout)</span> <span class="keyword">throws</span> InterruptedException</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">wait</span><span class="params">(<span class="keyword">long</span> timeout, <span class="keyword">int</span> nanos)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (timeout &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"timeout value is negative"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (nanos &lt; <span class="number">0</span> || nanos &gt; <span class="number">999999</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                            <span class="string">"nanosecond timeout value out of range"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (nanos &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        timeout++;</span><br><span class="line">    &#125;</span><br><span class="line">    wait(timeout);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">wait</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    wait(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>wait 有 3 个重载方法，最终调用的都是本地方法 wait(long timeout)，其中 timeout 的单位为毫秒，</p>
+<p><strong>wait 方法的调用必须要求当前线程已经持有了对象锁</strong>，否则也会会抛出 IllegalMonitorStateException 异常。当线程调用 wait 方法后，会被加入到该对象的锁等待集合中，然后进入 <strong>Waitng 或 Timed Waiting 等待</strong>状态，直到以下四种情况发生才会被唤醒：</p>
+<ul>
+<li>其他线程调用对象的 notify() 方法，并且正好该线程被任意选择为唤醒线程</li>
+<li>其他线程调用对象的 notifyAll() 方法</li>
+<li>其他线程通过 interrupt 方法中断该线程</li>
+<li>超过指定等待超时时间</li>
+</ul>
+<p>被唤醒后该线程会从对象的等待集合中删除，并重新启用线程调度，然后和其他线程一起竞争。一旦重新获取到锁，它对对象的所有同步声明都将恢复为原状态，即调用 wait方法时的情况，接着从调用 wait() 的地方继续执行。</p>
+<p>通过上边的代码可以看到，wait() 会抛出 InterruptedException 异常，因此在调用 wait() 时必须捕获这个异常，如果是被其他线程通过 interrup() 来打断，就会捕获到这个异常，因此也就等于被唤醒。</p>
+<h5 id="虚假唤醒"><a href="#虚假唤醒" class="headerlink" title="虚假唤醒"></a>虚假唤醒</h5><p>除了上边的三种被唤醒的情况外，还存在一种虚假唤醒的情况。它发生的概率很小，但如果发生了也会导致一些异常的情况发生，因此为了保证正确性，可以将 wait() 的调用放在 while 循环中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">     <span class="keyword">while</span> (&lt;condition does not hold&gt;) <span class="comment">//如果没有持有锁则继续 wait</span></span><br><span class="line">     obj.wait(timeout);</span><br><span class="line">    ... <span class="comment">// Perform action appropriate to condition</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="finalize"><a href="#finalize" class="headerlink" title="finalize()"></a>finalize()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>&#123; &#125;</span><br></pre></td></tr></table></figure>
+<p>当垃圾回收确定不再有对该对象的引用时，由垃圾回收器在对象上调用，该方法在 Object 中为空实现，子类可以通过覆写来执行对应场景的逻辑。</p>
+<p>以下内容为《深入理解 Java 虚拟机》书中的内容：</p>
+<blockquote>
+<p>当一个对象不可达时，至少需要经历两次标记过程才会被真正回收：当对象在进行可达性分析后发现没有和 GC Root 连接的引用链，则会被第一次标记并进行筛选，此时会判断是否有必要执行 finalize()，如果对象没有覆写finalize() 或是已经执行过了，则不会去执行。而如果需要执行，那么对象会被放置在 F-Queue 队列中，并在稍后由 JVM 自动创建的、低优先级的 Finalizer 线程来执行该对象的 finalize() 方法，但并不保证会等待 finalize() 方法执行完成，因为如果一个对象的 finalize() 方法执行缓慢或发生了死循环将会导致队列中其他对象永远处于等待，甚至导致回收系统奔溃。稍后 GC 会对 F-Queue 中的对象进行第二次小规模的标记，此时如果对象在finalize() 方法中重新和其他对象关联，那么会被从”即将回收“的集合中被移除，否则就会被真正回收了。</p>
+</blockquote>
+<p>如下代码所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinalizeDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> FinalizeDemo sInstance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">isAlive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"isAlive."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.finalize();</span><br><span class="line">        System.out.println(<span class="string">"finalize run."</span>);</span><br><span class="line">        sInstance = <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        sInstance = <span class="keyword">new</span> FinalizeDemo();</span><br><span class="line">        sInstance = <span class="keyword">null</span>; <span class="comment">//将对象的引用置为空</span></span><br><span class="line">        System.out.println(<span class="string">"GC No.1"</span>);</span><br><span class="line">        System.gc(); <span class="comment">//调用GC</span></span><br><span class="line">        Thread.sleep(<span class="number">500</span>); <span class="comment">//暂停500ms等待finalize执行</span></span><br><span class="line">        <span class="keyword">if</span> (sInstance != <span class="keyword">null</span>) &#123;</span><br><span class="line">            sInstance.isAlive();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">"recycled.."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"GC No.2"</span>);</span><br><span class="line">        sInstance = <span class="keyword">null</span>; <span class="comment">//将对象的引用置为空</span></span><br><span class="line">        System.gc(); <span class="comment">//再次调用GC</span></span><br><span class="line">        Thread.sleep(<span class="number">500</span>); <span class="comment">//暂停500ms等待finalize执行</span></span><br><span class="line">        <span class="keyword">if</span> (sInstance != <span class="keyword">null</span>) &#123;</span><br><span class="line">            sInstance.isAlive();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">"recycled.."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//执行结果</span></span><br><span class="line">GC No.1</span><br><span class="line">finalize run.</span><br><span class="line">isAlive.</span><br><span class="line">GC No.2</span><br><span class="line">recycled..</span><br></pre></td></tr></table></figure>
+<p>如上所述，任何对象的 finalize() 方法都只会被调用一次，当下一次回收时不会再被调用。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html" target="_blank" rel="noopener">Java 8 Class Object</a></p>
+<p>《深入理解 Java 虚拟机》</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Object/" rel="tag"># Object</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/19/图片加载库源码浅析之-Picasso/" rel="next" title="图片加载库源码浅析之 Picasso">
+                <i class="fa fa-chevron-left"></i> 图片加载库源码浅析之 Picasso
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wavever</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">44</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wavever" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wavever.ht@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/4736526/wavever" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#registerNatives"><span class="nav-number">1.</span> <span class="nav-text">registerNatives()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getClass"><span class="nav-number">2.</span> <span class="nav-text">getClass()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hashCode"><span class="nav-number">3.</span> <span class="nav-text">hashCode()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#equals"><span class="nav-number">4.</span> <span class="nav-text">equals()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#clone"><span class="nav-number">5.</span> <span class="nav-text">clone()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#toString-NaN"><span class="nav-number">6.</span> <span class="nav-text">toString()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#notify-amp-notifyAll"><span class="nav-number">7.</span> <span class="nav-text">notify() &amp; notifyAll()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#wait"><span class="nav-number">8.</span> <span class="nav-text">wait()</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#虚假唤醒"><span class="nav-number">8.1.</span> <span class="nav-text">虚假唤醒</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#finalize"><span class="nav-number">9.</span> <span class="nav-text">finalize()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wavever</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
