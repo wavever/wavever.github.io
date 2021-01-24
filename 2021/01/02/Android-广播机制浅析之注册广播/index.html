@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="广播," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近在分析一个广播 ANR 问题时，对广播机制的代码流程做了大致的l了解，作为 Android 四大组件之一，广播 在 Android 中的应用非常广泛，这里结合自己阅读源码过程中的笔记从代码流程上的做简要分析，对广播机制中涉及到进程进程优先级的切换等其他部分不做叙述。 本文为广播机制浅析系列第一篇，主要分析发送广播的流程。">
+<meta name="keywords" content="广播">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 广播机制浅析【1】注册广播">
+<meta property="og:url" content="wavever.github.io/2021/01/02/Android-广播机制浅析之注册广播/index.html">
+<meta property="og:site_name" content="wavever的博客">
+<meta property="og:description" content="最近在分析一个广播 ANR 问题时，对广播机制的代码流程做了大致的l了解，作为 Android 四大组件之一，广播 在 Android 中的应用非常广泛，这里结合自己阅读源码过程中的笔记从代码流程上的做简要分析，对广播机制中涉及到进程进程优先级的切换等其他部分不做叙述。 本文为广播机制浅析系列第一篇，主要分析发送广播的流程。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-01-02T15:21:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 广播机制浅析【1】注册广播">
+<meta name="twitter:description" content="最近在分析一个广播 ANR 问题时，对广播机制的代码流程做了大致的l了解，作为 Android 四大组件之一，广播 在 Android 中的应用非常广泛，这里结合自己阅读源码过程中的笔记从代码流程上的做简要分析，对广播机制中涉及到进程进程优先级的切换等其他部分不做叙述。 本文为广播机制浅析系列第一篇，主要分析发送广播的流程。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="wavever.github.io/2021/01/02/Android-广播机制浅析之注册广播/"/>
+
+
+
+
+
+  <title>Android 广播机制浅析【1】注册广播 | wavever的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+
+  <div class="container  page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wavever的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">从容不迫，淡定始终。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="wavever.github.io/2021/01/02/Android-广播机制浅析之注册广播/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wavever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wavever的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 广播机制浅析【1】注册广播</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-02T23:21:26+08:00">
+                2021-01-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在分析一个广播 ANR 问题时，对广播机制的代码流程做了大致的l了解，作为 Android 四大组件之一，<a href="https://developer.android.com/guide/components/broadcasts?hl=zh-cn#top_of_page" target="_blank" rel="noopener">广播 </a>在 Android 中的应用非常广泛，这里结合自己阅读源码过程中的笔记从代码流程上的做简要分析，对广播机制中涉及到进程进程优先级的切换等其他部分不做叙述。</p>
+<p>本文为广播机制浅析系列第一篇，主要分析发送广播的流程。</p>
+<a id="more"></a>
+<h3 id="广播简述"><a href="#广播简述" class="headerlink" title="广播简述"></a>广播简述</h3><p>从处理时机的角度来看，广播被分为有序广播和无序广播。有序广播通过 <code>Context#sendBroadcast()</code> 发送，接收者逐个进行处理，接收顺序可以通过匹配的 intent-filter 的 <code>android:priority</code> 属性来控制，具有相同优先级的接收器将按随机顺序运行，期间可以被中断也可以进行数据的传输，如果处理耗时过长则会发生 ANR，无序广播通过 <code>Context#sendBroadcast()</code> 发送，会同时发送给所有的接收者来处理，不会发生 ANR。</p>
+<p>从广播存在时间的角度，可以分为黏性广播和非黏性广播，黏性广播在被所有接收者处理完成后也不会消失，而是会一直保存在系统中，当有新接收者注册后，立即就会收到该广播。</p>
+<p>还可以分为前台广播和后台广播，通过给 Intent 添加 flag 可以切换为前台广播：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND)</span><br></pre></td></tr></table></figure>
+<p>前台广播超时时间为 10s，后台广播为 60s。</p>
+<h3 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h3><p>应用可以通过静态注册和动态注册来接收广播：</p>
+<h4 id="静态注册"><a href="#静态注册" class="headerlink" title="静态注册"></a><a href="https://developer.android.com/guide/components/broadcasts?hl=zh-cn#manifest-declared-receivers" target="_blank" rel="noopener">静态注册</a></h4><p>在 AndroidManifest.xml 的 <a href="https://developer.android.com/guide/topics/manifest/receiver-element?hl=zh-cn" target="_blank" rel="noopener">receiver</a> 标签中声明：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">receiver</span> <span class="attr">android:name</span>=<span class="string">".MyBroadcastReceiver"</span>  <span class="attr">android:exported</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.BOOT_COMPLETED"</span>/&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.INPUT_METHOD_CHANGED"</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>MyBroadcastReceiver 需要继承 <code>BroadcastReceiver</code>，并实现 <code>onReceive(Context, Intent)</code> 方法，PMS 会在应用安装时注册接收器，该接收器会成为应用的一个独立入口点，即如果应用当前未运行，系统会启动应用并发送广播。系统会创建新的 <code>BroadcastReceiver</code> 组件对象来处理它接收到的每个广播。此对象仅在调用 <code>onReceive(Context, Intent)</code> 期间有效。一旦从此方法返回代码，系统便会认为该组件不再活跃。</p>
+<h4 id="动态注册"><a href="#动态注册" class="headerlink" title="动态注册"></a><a href="https://developer.android.com/guide/components/broadcasts?hl=zh-cn#context-registered-receivers" target="_blank" rel="noopener">动态注册</a></h4><p>通过 Context 中提供的对应方法来注册广播接收者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// android.app.ContextImpl</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Intent <span class="title">registerReceiverAsUser</span><span class="params">(BroadcastReceiver receiver, UserHandle user,</span></span></span><br><span class="line"><span class="function"><span class="params">IntentFilter filter, String broadcastPermission, Handler scheduler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> registerReceiverInternal(receiver, user.getIdentifier(),</span><br><span class="line">        filter, broadcastPermission, scheduler, getOuterContext(), <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Intent <span class="title">registerReceiverInternal</span><span class="params">(BroadcastReceiver receiver, <span class="keyword">int</span> userId,</span></span></span><br><span class="line"><span class="function"><span class="params">IntentFilter filter, String broadcastPermission, Handler scheduler, Context context, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    IIntentReceiver rd = <span class="keyword">null</span>;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (scheduler == <span class="keyword">null</span>) &#123;</span><br><span class="line">        scheduler = mMainThread.getHandler(); <span class="comment">// 主线程 Handler</span></span><br><span class="line">    &#125;</span><br><span class="line">    rd = <span class="keyword">new</span> LoadedApk.ReceiverDispatcher(receiver, context, scheduler, <span class="keyword">null</span>, 		       <span class="keyword">true</span>).getIIntentReceiver();</span><br><span class="line"> 		<span class="keyword">final</span> Intent intent = ActivityManager.getService().registerReceiverWithFeature(</span><br><span class="line">						mMainThread.getApplicationThread(), mBasePackageName, getAttributionTag(), rd,</span><br><span class="line">            filter, broadcastPermission, userId, flags);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>registerReceiverInternal 中参数 broadcastPermission 表示广播所需权限，scheduler 用于指定处理广播的线程，默认情况下为主线程。rd 是 android.app.LoadedApk.ReceiverDispatcher.InnerReceiver 类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ReceiverDispatcher</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">InnerReceiver</span> <span class="keyword">extends</span> <span class="title">IIntentReceiver</span>.<span class="title">Stub</span> </span>&#123;          </span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>作为 Binder 服务端接收 AMS 在处理广播时的调用。接着则又是是通过 Binder 调用到 <code>ActivityManagerService#registerReceiverWithFeature</code> 中，此时就从<strong>注册广播应用进程走到了 SystemServer 进程：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> HashMap&lt;IBinder, ReceiverList&gt; mRegisteredReceivers = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"><span class="function"><span class="keyword">public</span> Intent <span class="title">registerReceiverWithFeature</span><span class="params">(IApplicationThread caller, String callerPackage,</span></span></span><br><span class="line"><span class="function"><span class="params">String callerFeatureId, IIntentReceiver receiver, IntentFilter filter,</span></span></span><br><span class="line"><span class="function"><span class="params">String permission, <span class="keyword">int</span> userId, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">		...</span><br><span class="line">    <span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">        ...</span><br><span class="line">        Iterator&lt;String&gt; actions = filter.actionsIterator(); <span class="comment">//注册的广播</span></span><br><span class="line">        <span class="comment">// mStickyBroadcasts 以 userId 为 key，保存了所有用户的黏性广播，这里提取该 userId</span></span><br><span class="line">        <span class="comment">// 和 USER_ALL 下的所有黏性广播到 stickyIntents中</span></span><br><span class="line">        <span class="keyword">int</span>[] userIds = &#123; UserHandle.USER_ALL, UserHandle.getUserId(callingUid) &#125;;</span><br><span class="line">        <span class="keyword">while</span> (actions.hasNext()) &#123;</span><br><span class="line">           ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ArrayList&lt;Intent&gt; allSticky = <span class="keyword">null</span>; <span class="comment">//所有需要处理的黏性广播</span></span><br><span class="line">    <span class="keyword">if</span> (stickyIntents != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">final</span> ContentResolver resolver = mContext.getContentResolver();</span><br><span class="line">        <span class="comment">// 查找匹配的黏性广播</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, N = stickyIntents.size(); i &lt; N; i++) &#123;</span><br><span class="line">            Intent intent = stickyIntents.get(i);</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">if</span> (filter.match(resolver, intent, <span class="keyword">true</span>, TAG) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                ...</span><br><span class="line">                allSticky.add(intent);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">//mRegisteredReceivers 以 IIntentReceiver 为 key 保存有所的接收者</span></span><br><span class="line">        ReceiverList rl = mRegisteredReceivers.get(receiver.asBinder());</span><br><span class="line">        <span class="keyword">if</span> (rl == <span class="keyword">null</span>) &#123;</span><br><span class="line">            rl = <span class="keyword">new</span> ReceiverList(...);</span><br><span class="line">            <span class="comment">//保存该接收者</span></span><br><span class="line">            mRegisteredReceivers.put(receiver.asBinder(), rl);</span><br><span class="line">        &#125; </span><br><span class="line">        BroadcastFilter bf = <span class="keyword">new</span> BroadcastFilter(filter, rl, callerPackage, callerFeatureId,</span><br><span class="line">            permission, callingUid, userId, instantApp, visibleToInstantApps);</span><br><span class="line">				rl.add(bf);</span><br><span class="line">        <span class="comment">// 将所有匹配的黏性广播入队进行发送</span></span><br><span class="line">        <span class="keyword">if</span> (allSticky != <span class="keyword">null</span>) &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> stickyCount = allSticky.size();</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; stickyCount; i++) &#123;</span><br><span class="line">                Intent intent = allSticky.get(i);</span><br><span class="line">                BroadcastQueue queue = broadcastQueueForIntent(intent);</span><br><span class="line">              	<span class="comment">//参数 _sticky 为 true</span></span><br><span class="line">                BroadcastRecord r = <span class="keyword">new</span> BroadcastRecord(...);</span><br><span class="line">              	<span class="comment">// 将黏性广播添加到并行队列中</span></span><br><span class="line">                queue.enqueueParallelBroadcastLocked(r);</span><br><span class="line">              	<span class="comment">//开始分发</span></span><br><span class="line">                queue.scheduleBroadcastsLocked();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sticky;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之前提到，黏性广播在发送后就会一直存在系统中，从这中可以看出，其是被保存在 ActivityManagerService 的成员变量 mRegisteredReceivers 中，并且当有用户在注册该广播监听时，立马就会收到。如果注册的事非黏性广播，则会将该接收者保存到 mRegisteredReceivers 中。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://developer.android.com/guide/components/broadcasts?hl=zh-cn" target="_blank" rel="noopener">Android Developer：广播概览</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/广播/" rel="tag"># 广播</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/23/Object-类方法简述/" rel="next" title="基础回顾之 Object 类">
+                <i class="fa fa-chevron-left"></i> 基础回顾之 Object 类
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/01/09/Android-广播机制浅析之发送广播/" rel="prev" title="Android 广播机制浅析【2】发送广播">
+                Android 广播机制浅析【2】发送广播 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wavever</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wavever" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wavever.ht@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/4736526/wavever" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#广播简述"><span class="nav-number">1.</span> <span class="nav-text">广播简述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册"><span class="nav-number">2.</span> <span class="nav-text">注册</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#静态注册"><span class="nav-number">2.1.</span> <span class="nav-text">静态注册</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态注册"><span class="nav-number">2.2.</span> <span class="nav-text">动态注册</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wavever</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
